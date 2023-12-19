@@ -1,11 +1,12 @@
+/* 对所有元素的设置 */
 *{
     font-family: KaiTi;
 }
 
+/* 商标动画结束后，组件浮现的动画 */
 div {
     animation: start-show 4.5s ease-in 0s 1 none;
 }
-
 @keyframes start-show {
     0%{
         opacity: 0;
@@ -17,6 +18,8 @@ div {
         opacity: 1;
     }
 }
+
+
 /* 标题 */
 div#title{
     font-family: STXingkai;
@@ -25,7 +28,7 @@ div#title{
     left: 15%;
     margin: 50px;
 }
-/* 三个选项按钮 */
+/* 四个选项 */
 div.start-page:not(#title){
     /* 文字大小 */
     font-size: 50px;
@@ -39,10 +42,9 @@ div.start-page:not(#title){
     margin: 30px;
     border: 2px black solid; border-radius: 20px;
     /* 颜色设置 */
-    
 }
 /* 鼠标覆盖时变色 */
-div.start-page:hover{
+div.start-page:not(#title):hover{
     background-color: grey;
     cursor: pointer;
 }
@@ -75,7 +77,33 @@ form{
     /* 字体设置 */
     font-size: 30px;
 }
-
+/* 美观的输入框 */
 input{
     width: 30px; height: 30px;
+}
+
+/* 通知页面 */
+#inform,#choice{
+    /* 位置设置 */
+    position: absolute;
+    left: 25%; top: 30%;
+    /* 大小设置 */
+    height: 30%; width: 50%;
+    /* 外观设置 */
+    border: 4px black solid; background-color: white;
+    /* 显示设置 */
+    opacity: 0; z-index: -1;
+}
+/* 按钮点击变色 */
+button{
+    background-color:aqua;
+}
+button:active{
+    background-color: grey;
+}
+/* absolute会自动将display属性变为inline */
+.tiptext{
+    position:relative; top:5%;
+    text-align: center;
+    font-size:20px;
 }
