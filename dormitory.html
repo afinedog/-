@@ -5,8 +5,68 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>寝室页面</title>
+    <link rel="stylesheet" href="寝室.css">
 </head>
 <body>
+    <script src="./jquery.js"></script>
     
+    <!-- 通知框 -->
+    <div id="inform">
+        <div> <b>通知</b> </div>
+        <div class="tiptext"> 出Bug了！请联系作者 </div>
+        <button type = "button" id="know" style="position: absolute; right:35%; bottom: 20%; width:30%; height:20%"> 好的 </button>
+    </div>
+    <!-- 选择框 -->
+    <div id="choice">
+        <div> <b>抉择</b> </div>
+        <div class="tiptext"> 出Bug了！请联系作者 </div>
+        <button type="button" id="yes" style="position: absolute; left:20%; bottom: 20%;  width:20%; height:20%"> 是</button>
+        <button type="button" id="no" style="position: absolute; right:20%; bottom: 20%;  width:20%; height:20%"> 否 </button>
+    </div>
+
+
+
+    <!-- 蒙板，用于跳过动画和打字机效果 -->
+    <img style="position:absolute; height: 100%; width: 100%; z-index:-1">
+    
+    <div id="dialog"></div>
+
+    <!-- 右侧按钮条纹 -->
+    <div class="flex-right">
+        <div class = "main-button" id="save">存档</div>
+        <div class = "main-button" id="rest">休息</div>
+        <div class = "main-button" id="train">训练</div>
+        
+        <div class = "main-button" id="compete">切磋</div>
+        
+        <div class = "main-button" id="skip">跳过</div>
+        
+        <div class = "main-button" id="start">退出</div>
+    </div>
+    <!-- 上侧数值条纹 -->
+    <div class="flex-up">
+        <div class="power">等级</div>
+        <div class="power">攻击</div>
+        <div class="power">防御</div>
+        <div class="power">生命</div>
+        <div class="power">体力</div>
+        <div class="power">天数</div>
+    </div>
+
+    <!-- 寝室条纹 -->
+    <h1 style="display: inline-block;">寝室</h1>
+
+    
+    <!-- 底部战斗框 -->    
+        <div class="flex-down">
+            <div>攻击</div>
+            <div>防御</div>
+            <div>技能</div>
+            <div>逃跑</div>
+        </div>
+    
+    
+    <script src="./start.js"></script>
+    <script src="./dormitory.js"></script>
 </body>
 </html>

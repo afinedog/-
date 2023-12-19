@@ -1,0 +1,81 @@
+/* 通配符 */
+*{
+    font-family: KaiTi;
+}
+
+/* 底部对话框 */
+
+#dialog{
+    position: absolute;
+    left: 2vh; bottom: 0.1vh;
+    border: dashed black;
+    border-radius: 2vh;
+}
+
+/* 右侧的按钮 */
+.flex-right{
+    display: flex;
+    flex-direction: column;
+    float: right;
+}
+/* 下述第一级的div */
+.flex-right>div{
+    /* 字体设计 */
+    align-content: center; vertical-align: middle; font-size: larger;
+    /* 边框 */
+    border: solid 1px black;
+    box-shadow: 4px;
+}
+/* 上侧的信息 */
+.flex-up{
+    display: flex;
+    flex-direction: row;
+    
+}
+.flex-up>div{
+    border: solid red 2px;
+}
+/* 底部战斗框 */
+.flex-down{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    bottom: 0px;
+    opacity: 0;
+}
+.flex-down>div{
+    border: solid green 4px;
+}
+
+
+
+div>div:not(.flex-up>div):active{
+    background-color: grey;
+}
+
+
+/* 通知页面 */
+#inform,#choice{
+    /* 位置设置 */
+    position: absolute;
+    left: 25%; top: 30%;
+    /* 大小设置 */
+    height: 30%; width: 50%;
+    /* 外观设置 */
+    border: 4px black solid; background-color: white;
+    /* 显示设置 */
+    opacity: 0; z-index: -1;
+}
+/* 按钮点击变色 */
+button{
+    background-color:aqua;
+}
+button:active{
+    background-color: grey;
+}
+/*  */
+#inform>div,#choice>div{
+    position:relative; top:5%;
+    text-align: center;
+    font-size:20px;
+}
