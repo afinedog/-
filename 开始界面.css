@@ -1,0 +1,80 @@
+*{
+    font-family: KaiTi;
+}
+
+div {
+    animation: start-show 4.5s ease-in 0s 1 none;
+}
+
+@keyframes start-show {
+    0%{
+        opacity: 0;
+    }
+    99%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+/* 标题 */
+div#title{
+    font-family: STXingkai;
+    font-size: 150px;
+    position: relative;
+    left: 15%;
+    margin: 50px;
+}
+/* 三个选项按钮 */
+div.start-page:not(#title){
+    /* 文字大小 */
+    font-size: 50px;
+    /* 文字对齐 */
+    text-align: center; vertical-align: bottom; align-content: center;
+    /* 位置定位 */
+    position: relative;
+    left: 27%;
+    /* 盒子模型设置 */
+    width: 600px; height: 80px;
+    margin: 30px;
+    border: 2px black solid; border-radius: 20px;
+    /* 颜色设置 */
+    
+}
+/* 鼠标覆盖时变色 */
+div.start-page:hover{
+    background-color: grey;
+    cursor: pointer;
+}
+
+/* 规则说明页面 */
+div.rule-intro{
+    /* 显示设置 */
+    z-index: -99; opacity : 0;
+    /* 长度 */
+    width: 60%; height: 80%;
+    /* 定位 */
+    position: absolute;
+    left: 20%; top: 10%;
+    /* 样式 */
+    border-radius: 20px; border: 5px ; border-style: dashed;    
+    font-size: 15px;
+    /* 鼠标覆盖时变为手 */
+    cursor: pointer;
+}
+
+/* 沙鼠证页面 */
+form{
+    /* 显示设置 */
+    z-index: -98;  opacity: 0;
+    /* 位置设置 */
+    position: absolute;
+    height: 60%;
+    top: 50px;
+    /* 字体设置 */
+    font-size: 30px;
+}
+
+input{
+    width: 30px; height: 30px;
+}

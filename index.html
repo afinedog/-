@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>原神启动！</title>
+
+
+    <link rel="stylesheet" href="./开场动画.css">
+    <link rel="stylesheet" href="./开始界面.css">
+    <link rel="stylesheet" href="./寝室页面.css">
+    <link rel="stylesheet" href="./地图页面.css">
+    <link rel="stylesheet" href="./对战页面.css">
+
+
+</head>
+
+
+<body>
+    <script src="./jquery.js"></script>
+    <!-- 开场动画图片 -->
+    <img id = "start-anime", src = "原神.png" , style = "position: absolute; left : 35% ; top: 25%">
+    <!-- 开场动画声音：“原神启动！” -->
+
+    <!-- 游戏开始界面 -->
+    <div class = "start-page" id = "title">沙鼠成长计划</div>
+    
+    <!-- <div class="start-page-pad"></div>
+    <div class="start-page-pad"></div> -->
+
+    <div class = "start-page" id = "game-start"> 开始游戏 </div>
+    <div class = "start-page" id = "guide"> 新手教程 </div>
+    <div class = "start-page" id = "rule"> 游戏规则 </div>
+    <div class = "start-page" id = "exit"> 退出  </div>
+
+    <!-- 规则说明页面 -->
+    <div class="rule-intro" id="first">
+        <h2 style="position: relative; left : 40%">故事背景</h1>
+        <p>&nbsp《沙鼠成长计划》是由学生自主编写的一款全新封闭世界冒险游戏。游戏发生在一个被称作「沙东袋学」的虚拟世界，在这里，被学校选中的人将被授予「学生证」，导引学习之力。你将扮演一位名为「21级新生」的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，和他们一起击败难题，取得沙鼠的荣光——同时，逐步发掘「学生就业率」的真相。</p>
+        <h2 style="position: relative; left : 40%">游戏玩法</h1>
+            <p>&nbsp 在选择好姓名、专业后，学校会为你分配学号和寝室。在寝室中，你可以与舍友聊天，可以休息并回复体力和生命。体力决定你一天可以做的事情数量，生命决定你在对战中可承受攻击的次数。</p>
+            <p>&nbsp 游戏中设有等级系统。通过选择不同专业课的老师，正确回答他们的问题，可以进行升级。等级越高，你的体力和生命值越多，意味着你变得更强。不同专业的生命体力与升级速度不同</p>
+            <p>&nbsp 在平时，你可以找本校的其它同学进行切磋。或者，你可以走出学校，与全国各地的高校学生PK。获胜者将得到丰厚的奖励，而失败者要么受到降级惩罚，要么认获胜者为干爹。</p>
+            <p>&nbsp 在第30天时，会迎来一次月考，与平时回答老师提问的形式相同，但每道题的作答时间有限。在月考中若错误过多，你将受到挂科惩罚。</p>
+        <h2 style="position: relative; left : 40%">对战规则</h1>
+            <p>&nbsp 战斗采取回合制，每人每回合有一次攻击和防守的机会。若有一方的生命值降为0，则战斗结束。</p>
+            <p>&nbsp 不同专业之间存在克制关系。克制关系中处于劣势的专业升级较为容易。详细规则请单击鼠标，进入下一章的介绍</p>
+    </div>
+    <div class="rule-intro" id="second">
+        <ul class = "minor" style = "position:relative;"> 计算机专业
+            <li> 微弱：数学专业、物理专业、电气电子</li> 
+            <li> 克制：土木专业、传统工科、偏门专业、生化环材地</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 数学专业
+            <li> 微弱：物理专业、医学专业</li>
+            <li> 克制：计算机专业、金融专业</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 物理专业
+            <li> 微弱：数学专业、医学专业</li>
+            <li> 克制：计算机专业、电气电子、传统工科</li>
+        </ul>
+            <ul class = "minor" style = "position:relative;"> 土木专业
+            <li> 微弱：计算机专业、电气电子、文史哲法、金融专业、医学专业</li>
+            <li> 克制：无</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 电气电子
+            <li> 微弱：计算机专业、物理专业</li>
+            <li> 克制：</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 文史哲法
+            <li> 微弱：数学专业、物理专业 </li>
+            <li> 克制：传统工科、医学专业</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 传统工科
+            <li> 微弱：</li>
+            <li> 克制：</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 金融专业
+            <li> 微弱：数学专业、</li>
+            <li> 克制：</li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 医学专业
+            <li> </li>
+            <li> </li>
+        </ul>
+        <ul class = "minor" style = "position:relative;"> 生化环材地
+            <li> 微弱：计算机专业、金融专业、</li>
+            <li> </li>
+        </ul>
+    </div>
+    <div class="rule-intro" id="third">
+        <h2 style="position: relative; left : 30%"></h1>
+            <p>&nbsp  </p>
+    </div>
+
+    <!-- 填写个人信息页面 -->
+    <form id="paper">
+        <fieldset>
+            <legend> 沙鼠证填写 </legend>
+            姓名：<input name = "姓名" type="text" placeholder="输入你的姓名" style="width: 200px; height: 30px; font-size:large"> <br>
+            性别:   <label for="sex1">男</label><input id="sex" type="radio">   <label for="sex2">女</label><input id="sex" type="radio">
+            <span id = "oye"style="opacity: 0; color: red"> 紧跟国际版本，我们沙鼠真的太前卫啦！！ </span> <br>
+            选择专业：校区所在地：<select>
+                <option value="计算机专业">计算机专业</option>
+                <option value="数学专业">数学专业</option>
+                <option value="物理专业">物理专业</option>
+                <option value="土木专业">土木专业</option>
+                <option value="电气电子">电气电子</option>
+                <option value="文史哲法">文史哲法</option>
+                <option value="传统工科">传统工科</option>
+                <option value="金融专业">金融专业</option>
+                <option value="医学专业">医学专业</option>
+                <option value="生化环材地">生化环材地</option>
+            </select><br>
+            （温馨提醒：请认真阅读并勾选以下内容，否则不予入学）<input type="checkbox"> <br>
+            <label for="check1"> 本人已充分阅读并了解以上内容，且声明均为本人真实意思表示 </label> <input type="checkbox" id="check1"> <br>
+            <label for="check2">若本人在校期间发生任何情况，一切责任由本人承担</label>  <input type="checkbox" id="check2"> <br>
+            <label for="check3">本人承诺绝不在网络等社交媒体发表任何不利于学校的言论，如有违反，自愿接受学校的一切处理</label> <input type="checkbox" id="check3"> <br>
+            <input id = "submit" type="button" value="提交" style="width: 100px; height: 40px ; font-size:large">
+            <input type="reset" value="重置表格" style="width: 100px; height: 40px; font-size:large">
+        </fieldset>
+        <p id = "tip1" style="color: red; font-size: larger; opacity:0">必须勾选所有复选框才能入学！！！</p>
+        <p id = "tip2" style="color: red; font-size: larger; opacity:0">学校不允许无名氏和无性别入学</p>
+    </form>
+
+</body>
+    
+<script src="./script.js"></script>
+
+</html>

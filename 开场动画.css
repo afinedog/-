@@ -1,0 +1,28 @@
+/* 开始动画*/
+#start-anime {    
+    position: absolute;
+    opacity: 0;
+    /*参数依次是：动画名称、持续时间、播放函数、延时播放时间、播放次数、播放方向 */
+    animation: 
+    /* 浮现 */
+    start-anime-show 1s linear 1s 1 forwards,
+    /* 退出 */
+    start-anime-vanish 1s ease-in 3s 1 forwards;
+}
+
+@keyframes start-anime-show{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+@keyframes start-anime-vanish{
+    from{
+        opacity: 1;
+    }
+    to{
+        opacity: 0;
+    }
+}
