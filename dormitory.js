@@ -14,15 +14,18 @@ $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*win
 
 // 能力值数组(6维)，分别是：等级、攻击、防御、生命、体力、天数
 // var power = [you.level, you.att,you.def,you.life,you.power,you.day];
+/* 从 localStorage 中取值 */
+you = JSON.parse(localStorage.getItem("you"));
+power = JSON.parse(localStorage.getItem("power"));
+// 通知并赋值
+inform("成功创建身份！欢迎成为沙鼠的一员。学校为你分配了寝室，和你的舍友打个招呼吧。")
 
-
-// 
 // 跳过这一天
 $("#skip").click(function(){
     choice("你确定要跳过这一天吗？").done(function (choice_res) { 
         if(choice_res == true)
             {
-                // you.day += 1;
+                you.day += 1;
                 inform("你跳过了这一天，离月考还有" + 30-you.day + "天");
             }
         else
@@ -34,7 +37,7 @@ $("#skip").click(function(){
 $("#start").click(function(){
     choice("退出将清空所有数据，请确认你已经保存。确定要退出吗？").done(function(choice_res){
         if (choice_res == true)
-            window.location.replace("./start.html");
+            window.location.assign("./start.html");
         else
             return;
     });

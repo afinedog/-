@@ -15,12 +15,18 @@
                 this.num = num;
             }
         }
-        const y = new student("李鼠",100);
-        y.name = 1
-        function a(){
-            return y.name = 0
+        
+        function f_1(){
+            function f_2(){
+                y = new student("李鼠",1);
+                b = 1;
+            }
+            f_2()
         }
-        yx = new student("李鼠",000)
+        f_1()
+        console.log(y.name)
+        console.log(b)
+        
     </script>
 </body>
 </html>
