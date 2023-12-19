@@ -1,14 +1,46 @@
-/* 关闭窗口 */
-$("#exit").click(function (){ alert("请手动关闭网页") });
+/* 查看荣誉 */
+// 荣誉页面出现函数
+function honor_show()
+{
+
+}
+// 点击查看荣誉按钮
+$("#honor").click(function (){ 
+    // 主页面隐身
+    rule_vanish(".start-page"); rule_vanish(".rule-intro");
+    honor_show();
+ });
 
 /* 游戏规则 */
 // 规则说明页面出现函数
 function rule_show(num){
-    $(num).css("opacity", "1");   $(num).css("z-index", "1");  $(num).css("position", "relative");
+    $(num).css({"opacity": "1", "z-index" : "1", "position": "relative"});
+    // 不知道为啥，jquery不能设置pointer-events的数值
+    // 处理id输入
+    if (num.substring(0,1) == "#")
+        document.getElementById(num.substring(1,num.length)).style.pointerEvents = "auto";
+    // 处理class输入（此时应该操纵数组）
+    else if(num.substring(0,1) == ".")
+        {   
+            var nums = document.getElementsByClassName(num.substring(1,num.length));
+            for (var i=0; i<nums.length; i++)
+                nums[i].style.pointerEvents = "auto";
+        }
 }
 // 规则说明页面消失函数
 function rule_vanish(num) { 
-    $(num).css("opacity", '0');  $(num).css("z-index", "-99"); $(num).css("position", "absolute");
+    $(num).css({"opacity" : "0", "z-index": "-99", "position": "absolute"});
+    // 不知道为啥，jquery不能设置pointer-events的数值
+    // 处理id输入
+    if (num.substring(0,1) == "#")
+        document.getElementById(num.substring(1,num.length)).style.pointerEvents = "none";
+    // 处理class输入（此时应该操纵数组）
+    else if(num.substring(0,1) == ".")
+        {   
+            var nums = document.getElementsByClassName(num.substring(1,num.length));
+            for (var i=0; i<nums.length; i++)
+                nums[i].style.pointerEvents = "none";
+        }
 }
 
 // 点击规则按钮
@@ -78,17 +110,17 @@ $("#submit").click(function () {
 class student
 {
     // 构造函数
-    student(name,num,life,act,def,life,dad){
+    student(name,num,life,act,def,hp,dad){
         this.name = name;       // 名字
         this.number = num;
         this.life = life;       // 体力
-        this.act = act;  this.def = def;  this.life = life; // 攻击、防御、生命值
+        this.act = act;  this.def = def;  this.hp = hp; // 攻击、防御、生命值
         this.dad = dad ;    // 干爹名单
     }
     name = '李鼠';  // 默认名字
     number = `${202100091100 + Math.round(100*Math.random())}`;  // 用反引号生成随机数数字
     life = 5;       // 体力
-    act = 5; def = 5; life = 5; // 攻击、防御、生命值
+    act = 5; def = 5; hp = 5; // 攻击、防御、生命值
     dad = [''] ;    // 干爹名单
 }
 
@@ -99,9 +131,7 @@ function identity(){
 
 /* 新手教程 */
 $("#guide").click(function () { 
-    // 本页面隐身
-    $("#third").css("opacity", '0');  $("#third").css("z-index", "-99"); $("#third").css("position", "absolute");
-    question();
+    window.location.replace("./dormitory.html")
 })
 
 
