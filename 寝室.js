@@ -9,6 +9,8 @@ $(".flex-up div").css({"height":`${1/12*window.innerHeight}`,"width":`${1/12*win
 $("#dialog").css({"height":`${1/4*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
 // 宿舍背景图
 $("#background").css({"height":`${1/2*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
+// 左侧人像
+$("#background").css({"height":`${2/3*window.innerHeight}`,"width":`${3/5*window.innerWidth}`})
 // 下侧战斗栏
 $(".flex-down").css({"height":`${1/4*window.innerHeight}`,"width":`${5/6*window.innerWidth}`})
 $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*window.innerWidth}`})
@@ -18,8 +20,9 @@ $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*win
 /* 从 localStorage 中取值 */
 you = JSON.parse(localStorage.getItem("you"));
 power = JSON.parse(localStorage.getItem("power"));
+// 坑爹的localStorage不能传递方法，只能手动再造一个对象
 roommate = JSON.parse(localStorage.getItem("roommate"));
-
+roommate = new Roommate(roommate.words, roommate.inter, roommate.figure,roommate.figure_src,roommate.fresh);
 
 /* 第一次进入时的交互 */
 // 绑定roommate对象和舍友人像图片
@@ -28,16 +31,20 @@ roommate.figure.attr("src", roommate.figure_src);
 // 判断是否是第一次进入
 if(roommate.fresh == true)
 {   
-    inform("你们已经成为舍友啦，快来打个招呼吧");
+    inform("你们已经成为舍友啦，快来打个招呼吧").done(function(){
+        // roommate.slide_in();
+        // roommate.hello();
+        fresh = false;
+    }
+    );
     // 舍友开始交互
-    roommate.slide_in();
-    roommate.hello();
 }
-// 舍友图片从左端滑入
-roommate.slide_in();
-// 点击会发生震颤动画，并播放语录
-$("#roommate").click(function(){
-    roommate.interaction;
+else
+    // 舍友图片从左端滑入
+    roommate.slide_in();
+    // 点击会发生震颤动画，并播放语录
+roommate.figure.click(function(){
+    roommate.interaction();
 })
 
 /* 存档 */
@@ -72,16 +79,43 @@ $("#save").click(function(){
         var month = date.getMonth() + 1; // 月份，从0开始，所以要加1，如8
         var day = date.getDate(); // 日期，如18
         // 拼接成一个字符串，格式为yyyyMMdd
-        var formatted_date = year + "" + (month < 10 ? "0" + month : month) + "" + (day < 10 ? "0" + day : day);
+        var formatted_date = year + "年" + (month < 10 ? "0" + month : month) + "月" + (day < 10 ? "0" + day : day) + "号";
         // 存档
-        handleDownload([you,roommate,power], `${formatted_date} 的存档`)
+        handleDownload([you,roommate,power], `${formatted_date}的存档`)
     })
 })
 
+/* 查看个人信息 */
+
+$("#check").click(function(){ 
+    inform(`<b>${you.name}</b> <br> 学号：${you.number} <br> 性别： ${you.sex} <br> 专业：${you.major} <br> 干爹名单：${you.dad}`);
+ })
+
 /* 训练 */
+
+$("#train").click(function(){
+    choice("你将面对本专业老师的习题考验。若能证明自己，学校将会为你升级。确定接受考验吗？").done(function(choice_res){ 
+        if(choice_res == true)
+            go_to("./训练.html",["you","roommate","power"]);
+        else
+            return;
+     })
+});
 
 /* 切磋 */
 
+$("#compete").click(function(){
+    choice("在其它学校，你将面对更加强大的敌人。要进行校外切磋吗？").done(function(choice_res){ 
+        if(choice_res == true)
+            go_to("./校外地图.html",["you","roommate","power"]);
+        else
+            inform("将为你在校内随机匹配敌人").done(function(){
+                
+            })
+
+     })
+    
+})
 
 /* 跳过这一天 */
 $("#skip").click(function(){

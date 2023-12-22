@@ -33,61 +33,84 @@ class student
 // 舍友类
 class Roommate{
     // 构造函数
-    constructor(inter,words){
-        this.inter = inter;
+    constructor(words,inter,figure,figure_src,fresh){
         this.words = words;
-    }
-
+        this.inter = inter;
+        this.figure = figure;
+        this.figure_src = figure_src;
+        this.fresh = fresh;
+    };
+    
     /* 属性 */
     figure; figure_src;
     words;  // 进入宿舍时说的话
     inter;  // 互动时说的话
     fresh;  // 是否是第一次进入宿舍
-    
+
     /* 方法 */
     // 滑入，进入宿舍时触发的动画
-    s(){
-        this.figure.animate({},500,function(){
-            $(this).css({"left":"0px"});
-        })
-    };
+    slide_in(){
+        this.figure.animate({left:"0px"},500)
+    }
     // 震颤，被点击时触发的动画
     tremble(){
         // jquery链调用
-        this.figure.animate({left: "-=10px"}, 50)
-        .animate({left: "+=20px"}, 50)
-        .animate({left: "-=20px"}, 50)
-        .animate({left: "+=20px"}, 50)
-        .animate({left: "-=10px"}, 50)
-    };
+        this.figure.animate({left: "-=10wh",top:"-=10wh"}, 50)
+        .animate({left: "+=20wh", top:"+=20wh"}, 50)
+        .animate({left: "-=20wh", top:"-=20wh"}, 50)
+        .animate({left: "+=20wh", top:"+=20wh"}, 50)
+        .animate({left: "-=10wh", top:"-=10wh"}, 50)
+    }
     // 互动，需要当点击人物时触发
     interaction(){
-        $("dialog").textContent = this.inter[Math.floor(Math.random()*this.inter.length)];
+        $("dialog").text(this.inter[Math.floor(Math.random()*this.inter.length)]);
         this.tremble();
-    };
+    }
     // 打招呼，在选择舍友后，进入寝室时立即触发
     hello(){
         var i = 0;
         this.say(i,this.words);
-    };
+    }
     // 说话功能，参数是一个字符串数组
     say(i,words){
-        // 将对话框中的内容替换为函数输入
-        $("#dialog").textContent = words[i];
-        // 点击一下对话框后，切换到下一句话
-        $("#dialog").click(function(){ 
-            if(i < words.length)
+        let index = 0;
+        function type(){
+            if(index <= words[i].length)
             {
-                i += 1;
-                $("#dialog").textContent = words[i];
-                // 尾递归调用函数
-                say(i,words);
+                $("#dialog").html(words[i].substring(0,index));
+                index += 1;
             }
             else
-                $("#dialog").textContent = "";
+                clearInterval(A);
+        }
+        // 每隔50毫秒打印一个字
+        var A = setInterval(type,50);
+        // 点击一下对话框后，切换到下一句话
+        $("#dialog").click(function(){
+            if(i < words.length)
+            {   
+                i += 1;
+                index = 0;
+                $("#dialog").html("");
+                console.log("递归调用一次");
+                // 尾递归调用函数
+                roommate.say(i,words);
+                
+                return;
+            }
+            else
+            {
+                $("#dialog").html("");
+                return;
+            }         
          })
-    };
+        return;
+    }
+
 }
+
+
+
 
 
 /* 通知和判断图窗 */
@@ -97,7 +120,7 @@ function show(ele) { $(ele).css({"opacity": "1", "z-index":"100"}); }
 
 // 通知函数，只有接受一个选项
 function inform(text){
-    $("#inform>.tiptext")[0].textContent = text;
+    $("#inform>.tiptext").html(text);
     show($("#inform"));
     // 创立异步对象
     var deferred = $.Deferred();
@@ -117,7 +140,7 @@ function inform(text){
 
 // 判断函数，有是或否两个选项
 function choice(text) {
-    $("#choice>.tiptext")[0].textContent = text;
+    $("#choice>.tiptext").html(text);
     show("#choice");
     var choice_res;
     var deferred = $.Deferred();
@@ -152,3 +175,35 @@ function go_to(href, para)
     //跳转到寝室页面
     window.location.href = href;
 }
+
+/* 新建版本的通知窗口 */
+function Inform(text){
+    // 新设置一个div元素
+    var $inform = $(`<div></div>`);
+    $("body").append($inform);
+    // 设置其位置居中
+    $inform.css({position:"absolute", top:`${window.innerHeight - 1/2*$(this).css("height")}`, left:`${window.innerWidth - 1/2*$(this).css("width")}`});
+    // 设置其覆盖率最高
+    $inform.css("z-index","100");
+    // 填充内容
+    $inform.text(`<b>通知</b> <br> ${text}`)
+    // “好的”按钮
+    var $yes = $(`<div>好的</div>`);
+    $inform.append($yes);
+    $yes.css({position:"absolute", bottom:"10%", left:"25%" ,width:"50%", height:"20%",});
+    $yes.css("background-color","blue");
+
+    // 异步操作
+    var deferred = $.Deferred();
+    // 单击按钮后图窗消失
+    $yes.click(function(){
+        // 每次点击更新图窗，都会更新人物数值
+        power = [you.level, you.att, you.def, you.life, you.hp, you.day];
+        for(var i = 0; i<$(".power").length; i++)
+            $(".power")[i].textContent = $(".power")[i].textContent.slice(0,2) + power[i];
+        // 图窗消失
+        deferred.resolve();
+        remove($inform);
+    });
+    return deferred.promise();
+};

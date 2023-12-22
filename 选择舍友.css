@@ -34,6 +34,8 @@ div.img-intro{
     border: 4px black solid; background-color: white;
     /* 显示设置 */
     opacity: 0; z-index: -1;
+    /* 文字设置 */
+    overflow: scroll;
 }
 /* 按钮点击变色 */
 button{

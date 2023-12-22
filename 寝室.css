@@ -1,6 +1,7 @@
 /* 通配符 */
 *{
     font-family: KaiTi;
+    font-size: 30px;
 }
 
 
@@ -14,6 +15,8 @@
     left: 2vh; bottom: 0.1vh;
     border: dashed black;
     border-radius: 2vh;
+    background-color: gold;
+    z-index: 100;
 }
 
 /* 右侧的按钮 */
@@ -69,6 +72,8 @@ div>div:not(.flex-up>div):active{
     border: 4px black solid; background-color: white;
     /* 显示设置 */
     opacity: 0; z-index: -1;
+    /* 文字设置 */
+    overflow: scroll;
 }
 /* 按钮点击变色 */
 button{

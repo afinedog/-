@@ -29,3 +29,7 @@
 
 - absolute定位会自动将block换为inline，故提示框内文本用relative即可
 - 开启一个新页面固然会对css等定位减轻很大的负担。但js却无法直接将参数传递到新页面中。必须使用本地存库或cookie才行，所以我需要一个新方法
+- jquery在内容中动态输入html标签的方法：使用 ``$.html(内容)``
+  - jquery选择器选择的是jquery对象，而不是元素对象。故 `$[0]` 是元素，不能用jquery方法，但可以直接用原生js设置属性，`$` 是jquery对象，无元素属性，但可以用jquery方法设置属性
+  - 若在元素中使用jquery方法，报错是 `$[0].text() is not a function`
+- `localStorage` 是将对象转化为字符串，然后放入JSON文件中传递的。因此它不能传递方法，需要重新赋值（坑死我了）
