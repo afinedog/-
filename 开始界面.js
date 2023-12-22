@@ -60,6 +60,9 @@ $("#third").click(function () {
     rule_show(".start-page");
 })
 
+
+
+
 /* 查看荣誉 */
 // 点击查看荣誉按钮
 $("#honor").click(function (){ 
@@ -67,7 +70,10 @@ $("#honor").click(function (){
     rule_vanish(".start-page"); rule_vanish(".rule-intro");
     rule_show("#honor-intro")
  });
- // 单击荣誉界面
+// 单击每个荣誉的按钮，查看荣誉的获得方法
+// 单击荣誉界面
+
+
 
 /* 开始游戏 */
 // 点击开始按钮
@@ -101,15 +107,11 @@ $("#submit").click(function () {
                 // 初始化身份
                 identity();
                 // 根据专业分配荣誉
-                honor_check_major();
-                //存值
+                // honor_check_major();
+                // 存值
                 power = [you.level, you.att,you.def,you.life,you.power,you.day];
-                localStorage.setItem("you", JSON.stringify(you));
-                localStorage.setItem("power", JSON.stringify(power));
-                // //取值
-                // you = JSON.parse(localStorage.getItem("you"));
-                //跳转到寝室页面
-                window.location.href = "./dormitory.html";
+                // 跳转页面，输入要传递的值
+                go_to("./选择舍友.html", ["power","you"]);
             }
         })
     }
@@ -128,28 +130,11 @@ function identity(){
     // （作弊模式，给出一张表单，自己填写数值）
 }
 
-/* 检测荣誉 */
-function honor_check_major() { 
-    inform("啊！你的选择为你赢得了沙鼠的荣耀，来看一下吧").done(function(){
-        switch (you.major) {
-            case '数学专业': inform("恭喜你获得荣誉：“大爷”<br> 《》");
-            case '物理专业': inform("恭喜你获得荣誉：“二爷”<br> 《》");
-            case '计算机专业': inform("恭喜你获得荣誉：“程序猿”<br> 《好普通的称号……》");
-            case '土木专业': inform("恭喜你获得荣誉：“土木牛马”<br> 《成为群嘲的对象了！》");
-            case '医学专业': inform("恭喜你获得荣誉：“医学狗”<br> 《组胚背完了吗？》");
-            case '电气电子专业':inform("恭喜你获得荣誉：“”<br> 《》");
-            case '传统工科': inform("恭喜你获得荣誉：“工科狗”<br> 《都是狗，凭什么医学》");
-            case '生化环材地': inform("恭喜你获得荣誉：“天坑之子”<br> 《专业坑不是人坑》");
-            case '金融专业': inform("恭喜你获得荣誉：“两极分化”<br> 《争取成为人上人吧》");
-            case '文史哲法': inform("恭喜你获得荣誉：“官老爷”<br> 《》");
-        }
-    })  
-}
 
-/* 新手教程 */
+
+
+
+/* 练习模式 */
 $("#guide").click(function () { 
     
 })
-
-
-
