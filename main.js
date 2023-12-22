@@ -39,19 +39,37 @@ class Roommate{
     }
 
     /* 属性 */
+    figure; figure_src;
     words;  // 进入宿舍时说的话
     inter;  // 互动时说的话
+    fresh;  // 是否是第一次进入宿舍
     
     /* 方法 */
+    // 滑入，进入宿舍时触发的动画
+    s(){
+        this.figure.animate({},500,function(){
+            $(this).css({"left":"0px"});
+        })
+    };
+    // 震颤，被点击时触发的动画
+    tremble(){
+        // jquery链调用
+        this.figure.animate({left: "-=10px"}, 50)
+        .animate({left: "+=20px"}, 50)
+        .animate({left: "-=20px"}, 50)
+        .animate({left: "+=20px"}, 50)
+        .animate({left: "-=10px"}, 50)
+    };
     // 互动，需要当点击人物时触发
     interaction(){
-
-    }
+        $("dialog").textContent = this.inter[Math.floor(Math.random()*this.inter.length)];
+        this.tremble();
+    };
     // 打招呼，在选择舍友后，进入寝室时立即触发
     hello(){
         var i = 0;
         this.say(i,this.words);
-    }
+    };
     // 说话功能，参数是一个字符串数组
     say(i,words){
         // 将对话框中的内容替换为函数输入
@@ -67,10 +85,8 @@ class Roommate{
             }
             else
                 $("#dialog").textContent = "";
-                return;
          })
-        return;
-    }
+    };
 }
 
 

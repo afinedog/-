@@ -5,7 +5,6 @@ you = JSON.parse(localStorage.getItem("you"));
 inform("成功创建身份！欢迎成为沙鼠的一员。学校为你分配了寝室，快来选择你的舍友吧")
 // 选择舍友
 $("div.img-container").click(function(){
-    console.log($(this),$(this).find("img"))
     if ($(this).find("img").attr("alt") == "唐妞")
         roommate = new Roommate(
             // 交互语言
@@ -48,8 +47,11 @@ $("div.img-container").click(function(){
             // 开场独白
             [`${you.name}同学，你好你好`, "我叫什么名字？我叫吕克！","来把CS GO吧？","不玩拉倒"]
         );
+    roommate.figure_src = `${"./图片/" + $(this).find("img").attr("alt") + "人像.png"}`;
+    // 第一次进入宿舍
+    roommate.fresh = true;
     // 获得荣誉
 
     // 跳转到寝室页面
-    go_to("./寝室.html",["you","power"]);
+    go_to("./寝室.html",["you","power","roommate"]);
 })
