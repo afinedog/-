@@ -7,6 +7,8 @@ $(".flex-up").css({"height":`${1/12*window.innerHeight}`,"width":`${1/2*window.i
 $(".flex-up div").css({"height":`${1/12*window.innerHeight}`,"width":`${1/12*window.innerWidth}`})
 // 下侧对话框
 $("#dialog").css({"height":`${1/4*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
+// 宿舍背景图
+// $("#background").css({"height":`${1/2*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
 // 下侧战斗栏
 $(".flex-down").css({"height":`${1/4*window.innerHeight}`,"width":`${5/6*window.innerWidth}`})
 $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*window.innerWidth}`})
@@ -17,10 +19,9 @@ $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*win
 you = JSON.parse(localStorage.getItem("you"));
 power = JSON.parse(localStorage.getItem("power"));
 
-/* 开始交互 */
+/* 进入时的交互 */
 inform("你们已经成为舍友啦，快来打个招呼吧");
-
-
+// 舍友开始交互
 
 /* 跳过这一天 */
 $("#skip").click(function(){

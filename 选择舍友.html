@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="./选择舍友.css">
 </head>
 <body>
+    <script src="jquery.js"></script>
+
+    <!-- 通知框 -->
+    <div id="inform">
+        <div> <b>通知</b> </div>
+        <div class="tiptext"> 出Bug了！请联系作者 </div>
+        <button type = "button" id="know" style="position: absolute; right:35%; bottom: 20%; width:30%; height:20%"> 好的 </button>
+    </div>
+    <!-- 选择框 -->
+    <div id="choice">
+        <div> <b>抉择</b> </div>
+        <div class="tiptext"> 出Bug了！请联系作者 </div>
+        <button type="button" id="yes" style="position: absolute; left:20%; bottom: 20%;  width:20%; height:20%"> 是</button>
+        <button type="button" id="no" style="position: absolute; right:20%; bottom: 20%;  width:20%; height:20%"> 否 </button>
+    </div>
+
     <h1 style="display: block;">请选择你的舍友</h1>
     <div class="img-container">
         <img src="./图片/唐妞.png" height="70%" width="300wh" alt="唐妞">
@@ -28,7 +44,8 @@
         <img src="./图片/郭继承.png" height="70%" width="300wh" alt="郭继承">
     <div class="img-intro"><h2>郭继承</h2> <p> 如来，中国政法大学副教授 </p> </div>
     </div>
-
+    <script src="开始界面.js"></script>
+    <script src="main.js"></script>
     <script src="选择舍友.js"></script>
 </body>
 </html>

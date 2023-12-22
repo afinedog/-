@@ -31,7 +31,7 @@ class student
 }
 
 // 舍友类
-class roommate{
+class Roommate{
     // 构造函数
     constructor(inter,words){
         this.inter = inter;
@@ -127,24 +127,12 @@ function go_to(href, para)
 {
     // 存值
     // para变量名的字符串数组
-    for (let i = 0; i < para.length; i++) {
-        const variableName = para[i];
-        const variableValue = eval(variableName); // 获取变量的值
+    for (var i = 0; i < para.length; i++) {
+        var variableName = para[i];
+        var variableValue = eval(variableName); // 获取变量的值
         localStorage.setItem(variableName, JSON.stringify(variableValue));
     }
     // you = JSON.parse(localStorage.getItem("you"));
     //跳转到寝室页面
     window.location.href = href;
 }
-/* 取值
-    for (let i = 0; i < para.length; i++)
-    {
-        const variableName = para[i];
-        const storedValue = localStorage.getItem(variableName);
-        if (storedValue !== null)
-        {
-            const variableValue = JSON.parse(storedValue);
-            eval(`${variableName} = ${variableValue}`);
-        }
-    }
-*/
