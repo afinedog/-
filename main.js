@@ -1,15 +1,15 @@
 // 学生类
-class student
+class Student
 {
     // 构造函数
     constructor(    // 参数列表
                 name = 'bug',
                 sex = 'bug',
                 major = 'bug',
-                level = 1,
                 num = `${202100091100 + Math.round(100*Math.random())}`,  // 用反引号生成随机数数字
+                level = 1,
                 life = 5,       // 体力
-                att = 1, def = 1, hp = 5, // 攻击、防御、生命值
+                att = 1, def = 1, hp = 5,speed = 1, // 攻击、防御、生命值
                 day = 0,
                 dad = [],     // 干爹名单)
                 honor = []    // 已获得的荣誉
@@ -19,21 +19,23 @@ class student
         this.name = name;       // 名字
         this.sex = sex;         // 性别
         this.major = major;     // 专业
-        this.level = level;     // 等级
         this.number = num;      // 学号
+        this.level = level;     // 等级
         this.life = life;       // 体力
-        this.att = att;  this.def = def;  this.hp = hp; // 攻击、防御、生命值
+        this.att = att;  this.def = def;  this.hp = hp; this.speed = speed; // 攻击、防御、生命值、速度
         this.day = day;     // 经过天数
         this.dad = dad ;    // 干爹名单
         this.honor = honor;
     }
+    /* 属性 */
     name; sex; major; level; number; life; att; day; dad; honor; 
 }
 
 // 舍友类
 class Roommate{
     // 构造函数
-    constructor(words,inter,figure,figure_src,fresh){
+    constructor(name,words,inter,figure,figure_src,fresh){
+        this.name = name;
         this.words = words;
         this.inter = inter;
         this.figure = figure;
@@ -42,6 +44,7 @@ class Roommate{
     };
     
     /* 属性 */
+    name;
     figure; figure_src;
     words;  // 进入宿舍时说的话
     inter;  // 互动时说的话
@@ -50,7 +53,7 @@ class Roommate{
     /* 方法 */
     // 滑入，进入宿舍时触发的动画
     slide_in(){
-        this.figure.animate({left:"0px"},500)
+        this.figure.animate({left:"2vh"},500)
     }
     // 震颤，被点击时触发的动画
     tremble(){
@@ -68,16 +71,16 @@ class Roommate{
     }
     // 打招呼，在选择舍友后，进入寝室时立即触发
     hello(){
-        var i = 0;
-        this.say(i,this.words);
+        var say_num = 0;
+        this.say(say_num,this.words);
     }
-    // 说话功能，参数是一个字符串数组
+    // 说话功能，参数是一个字符串数组。但是每次递归的消耗量是2^n级增长的，文本段数若过大，则不可被接受。（不过也只是做不了Gal而已……）
     say(i,words){
         let index = 0;
         function type(){
             if(index <= words[i].length)
             {
-                $("#dialog").html(words[i].substring(0,index));
+                $("#dialog").html(`<b>${roommate.name}</b>：<br> &nbsp&nbsp` + words[i].substring(0,index));
                 index += 1;
             }
             else
@@ -87,31 +90,137 @@ class Roommate{
         var A = setInterval(type,50);
         // 点击一下对话框后，切换到下一句话
         $("#dialog").click(function(){
-            if(i < words.length)
+            if(i < words.length-1)
             {   
                 i += 1;
                 index = 0;
                 $("#dialog").html("");
-                console.log("递归调用一次");
+                // console.log(`这是第${i}次递归`);
                 // 尾递归调用函数
                 roommate.say(i,words);
-                
+                // console.log(`第${i}次递归被释放`)
                 return;
             }
             else
             {
                 $("#dialog").html("");
                 return;
-            }         
+            }
          })
+        // console.log(`退出i=${i}的click函数`)
         return;
     }
 
 }
 
+// 老师类
+class Teacher{
+    constructor(major,question,answer,selection){
+        this.major = major;
+        this.question = question;
+        this.selection = selection;
+        this.answer = answer;
+    };
+    /* 属性 */
+    major;      // 专业，字符串
+    question;   // 试题，十个字符串的一维数组
+    answer;     // ，十个数字
+    selection;  // 选项，arr[10][4]的二维数组
+    /* 方法 */
+    check(){
 
+    }
+}
 
+// 战斗说明函数
+function report(color = "black",text){
+    $("#dialog").css("font-color",color);
+    $("#dialog").append(text + "<br>");
+}
 
+// 战斗类，继承自学生类
+class Fighter extends Student{
+    constructor(name, sex, major, level, number,life, att,def,hp,speed, day, dad, honor,bool_running,bool_summon)
+    {
+        // 装填为学生类
+        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor);
+        // 子类属性（战斗素质）
+        power
+        // 子类属性（是否携带技能）
+        this.bool_running = bool_running; this.bool_summon = bool_summon;
+    }
+    /* 属性 */
+    // 父类Student的属性
+    name; sex; major; level; number; life; att; day; dad; honor;
+    // 子类Fighter的属性
+    bool_running; bool_summon;
+    /* 方法（技能） */
+    // 逃课，免疫一次攻击，但下次攻击受到双倍伤害
+    running()
+    {
+        if(this.bool_running == true)
+        {
+            $().click();
+            report("aqua",`${you_fighter} 使用了逃课，将会回避下回合对手的攻击。`)
+        }
+        else 
+        {
+            ;
+        }
+    }
+    // 召唤干爹，获得等同于随机一个干爹的属性值一回合
+    summon()
+}
+
+/* 不同专业的战斗类*/
+// 数学
+class Math_Fighter extends Fighter{
+    constructor(
+        // 父类Fighter的属性
+        name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,
+        bool_running,bool_summon,
+        // 子类的属性
+
+    )
+    {
+        // 父类的构造函数
+        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,bool_running,bool_summon);
+        // 子类
+        
+    }
+}
+// 医学
+class Medicine_Fighter extends Fighter{
+    constructor(
+        // 父类Fighter的属性
+        name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,
+        bool_running,bool_summon,
+        // 子类的属性
+
+    )
+    {
+        // 父类的构造函数
+        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,bool_running,bool_summon);
+        // 子类
+        
+    }
+}
+// 土木
+class Civil_Fighter extends Fighter{
+    constructor(
+        // 父类Fighter的属性
+        name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,
+        bool_running,bool_summon,
+        // 子类的属性
+
+    )
+    {
+        // 父类的构造函数
+        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,bool_running,bool_summon);
+        // 子类
+        
+    }
+}
 
 /* 通知和判断图窗 */
 // 普通的消失函数
@@ -127,7 +236,7 @@ function inform(text){
     // 单击按钮后图窗消失
     $("#know").click(function(){
         // 每次点击更新图窗，都会更新人物数值
-        power = [you.level, you.att, you.def, you.life, you.hp, you.day];
+        power = [you.level, you.att, you.def, you.speed, you.life, you.hp, you.day];
         for(var i = 0; i<$(".power").length; i++)
             $(".power")[i].textContent = $(".power")[i].textContent.slice(0,2) + power[i];
         // 图窗消失

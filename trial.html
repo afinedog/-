@@ -11,15 +11,18 @@
     <div class="p"> 松松1 </div>
     <div class="p" style="position: absolute;"> 松松2  </div>
     <script>
-        class Roommate{
-            constructor(e){ this.a = e; }
-            a;
-            slide_in(){
-                this.a.animate({left:"100px"},500);
+        var num = 1;
+        function type(){
+            if(num < 10)
+            {
+                document.write("yes");
+                num += 1;
+                type();
             }
+            else
+                clearInterval(A);
         }
-        room = new Roommate($(".p"));
-        room.slide_in();
+        var A = setInterval(type,50);
     </script>    
 </body>
 </html>

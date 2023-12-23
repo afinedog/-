@@ -14,51 +14,51 @@
     <div id="inform">
         <div> <b>通知</b> </div>
         <div class="tiptext"></div>
-        <button type = "button" id="know" style="position: absolute; right:35%; bottom: 20%; width:30%; height:20%"> 好的 </button>
+        <button type = "button" id="know" style="position: relative; left:35%; top: 30%; width:30%; height:20%"> 好的 </button>
     </div>
     <!-- 选择框 -->
     <div id="choice">
         <div> <b>抉择</b> </div>
         <div class="tiptext"></div>
-        <button type="button" id="yes" style="position: absolute; left:20%; bottom: 20%;  width:20%; height:20%"> 是</button>
-        <button type="button" id="no" style="position: absolute; right:20%; bottom: 20%;  width:20%; height:20%"> 否 </button>
+        <button type="button" id="yes" style="position: relative; left:20%; top: 30%;  width:20%; height:20%"> 是</button>
+        <button type="button" id="no" style="position: relative; left:37%; top: 30%;  width:20%; height:20%"> 否 </button>
     </div>
 
 
 
     <!-- 蒙板，用于跳过动画和打字机效果 -->
-    <img style="position:absolute; height: 100%; width: 100%; z-index:-1">
+    <img style="position:absolute; height: 100%; width: 100%; z-index:-1; opacity:0">
     <!-- 寝室背景 -->
-    <!-- <img src="./图片/寝室背景.png" id="background" style="position:absolute; height: 30%; width: 20%; z-index:-1"> -->
+    <img src="./图片/寝室背景.png" id="background" style="position:absolute; top:9vh; left:2vh; z-index:-1;">
     <!-- 舍友立绘 -->
-    <img id = "roommate" style ="position:absolute; left:-20%; top:20%">
+    <img id = "roommate" style ="position:absolute; left:-30%; top:26%">
 
     <div id="dialog"></div>
 
     <!-- 右侧按钮条纹 -->
     <div class="flex-right">
         <div class = "main-button" id="save">存档</div>
-        <div class = "main-button" id="check">信息</div>
+        <div class = "main-button" id="check">你的信息</div>
         <div class = "main-button" id="train">训练</div>
-        
         <div class = "main-button" id="compete">切磋</div>
-        
-        <div class = "main-button" id="skip">跳过</div>
-        
+        <div class = "main-button" id="skip">休息</div>
         <div class = "main-button" id="start">退出</div>
     </div>
+    <!-- 配招按钮 -->
+        <div id="skill-edit">技能设置</div>
     <!-- 上侧数值条纹 -->
     <div class="flex-up">
         <div class="power">等级</div>
         <div class="power">攻击</div>
         <div class="power">防御</div>
+        <div class="power">速度</div>
         <div class="power">生命</div>
         <div class="power">体力</div>
         <div class="power">天数</div>
     </div>
 
     <!-- 寝室条纹 -->
-    <h1 style="display: inline-block;">寝室</h1>
+    <h1 style="display: inline-block; position:relative; left:1vh;">寝室</h1>
 
     
     <!-- 底部战斗框 -->    

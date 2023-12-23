@@ -119,7 +119,7 @@ $("#submit").click(function () {
 // 初始化玩家身份
 function identity(){
     // （非作弊模式）
-    you = new student(
+    you = new Student(
         //姓名
         $("input[type='text']")[0].value,
         // 性别

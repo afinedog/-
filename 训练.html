@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>训练</title>
+    <style>
+        *{
+            font-family: KaiTi;
+            font-size: 30px;
+        }
+        input{
+            scale: 2;
+            border-color: transparent;
+        }
+        #progress{
+            background-color: green;
+            height: 30vh;
+            width: 80wh;
+        }
+        #submit{
+            position: relative; right: 40%;
+        }
+    </style>
+</head>
+<body>
+    <script src="./jquery.js"></script>
+    <form>
+        <legend>  </legend>
+        <!-- 试题 -->
+        <div id="question"></div>
+        <!-- 进度条 -->
+        <img id="progress">
+        <!-- 选项 -->
+        <label for="selection"> <b>A</b> <input id = "A" type="radio" name = "selection"> <div id = "Aq"> <!-- 选项内容 --></div> </label> <br>
+        <label for="selection"> <b>B</b> <input id = "B" type="radio" name = "selection"> <div id = "Bq"> <!-- 选项内容 --></div> </label> <br>
+        <label for="selection"> <b>C</b> <input id = "C" type="radio" name = "selection"> <div id = "Cq"> <!-- 选项内容 --></div> </label> <br>
+        <label for="selection"> <b>D</b> <input id = "D" type="radio" name = "selection"> <div id = "Dq"> <!-- 选项内容 --></div> </label> <br>
+        <input type="submit" id="submit">
+    </form>
+    <script src="./main.js"></script>
+    <script>
+        // 取值
+        you = JSON.parse(localStorage.getItem("you"));
+        power = JSON.parse(localStorage.getItem("power"));
+        roommate = JSON.parse(localStorage.getItem("roommate"));
+        // 坑爹的localStorage不能传递方法，只能手动再造一个对象
+        teacher = JSON.parse(localStorage.getItem("teacher"));
+        teacher = new Teacher(teacher.major, roommate.question, roommate.selection,roommate.answer);
+
+
+        // 选项变色设置
+        $("input[type='radio']").click(function(){
+            if( $(this).css("border-color") == "green" )
+                $(this).css("border-color") = "transparent";
+            else
+                $(this).css("border-color") = "green";
+        })
+        // 填写题目和选项
+        function write(tea,i){
+            $("#question").html(tea.question[i]);
+            $("#Aq").html(tea.selection[i][0]); $("#Bq").html(tea.selection[i][1]); $("#Cq").html(tea.selection[i][2]); $("#Dq").html(tea.selection[i][3]);
+        }
+
+        // 通知作答
+        inform("每场考试有10道选择题，每题10分。你有60秒的时间作答每一道题。得60分便算及格。<br> 准备好了吗？等你按下确定，我们就开始。").done(function(){
+            // 是否作答
+            var answered = false;
+            // 当前经过的秒数
+            var second = 0;
+            var timer = setInterval(progress,1000);
+            // 进度条宽度变小
+            $("#progress").css("width",`${600-10*second}px`);
+            // 进度条归零时到下一题
+            function progress(){
+                second +=1;
+                if(second == 60 || answered == true)
+                clearInterval(timer);
+            };
+            
+            var num = 1;
+            // 得分，规定一题10分
+            var score = 0;
+            // 试卷标题
+            $("legend").html(`${teacher.major}老师的训练题`);
+            // 使用老师对象来看是否正确
+            $("#submit").click(function(){
+                var selection = $("input[type='radio']").attr(value);
+                for(var i = 0; i<3; i++)
+                {
+                    if($("input[type='radio']")[i].checked == true)
+                        score += 10*(i == teacher.answer[i]);
+                }
+                num += 1;
+                write(teacher,num);
+            })
+            
+            // 进入结算
+            if(score >= 60)
+            {
+                you.level += 1;
+                inform(`恭喜你，分数达到了 ${score}，成功升到了 ${you.level} 级。`)
+            }
+            else
+                inform(`很遗憾，你的分数只有 ${score}，升级失败。下次努力吧。`)
+            // 跳转回寝室
+            go_to("./寝室.html",["you","power"])
+        })
+        
+
+    </script>
+</body>
+</html>

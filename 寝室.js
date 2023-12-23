@@ -3,12 +3,12 @@
 $(".flex-right").css({"height":`${window.innerHeight}`,"width":`${1/6*window.innerWidth}`})
 $(".flex-right div").css({"height":`${1/6*window.innerHeight}`,"width":`${1/6*window.innerWidth}`})
 // 上侧数值栏
-$(".flex-up").css({"height":`${1/12*window.innerHeight}`,"width":`${1/2*window.innerWidth}`})
-$(".flex-up div").css({"height":`${1/12*window.innerHeight}`,"width":`${1/12*window.innerWidth}`})
+$(".flex-up").css({"height":`${1/12*window.innerHeight}`,"width":`${2/3*window.innerWidth}`})
+$(".flex-up div").css({"height":`${1/12*window.innerHeight}`,"width":`${1/8*window.innerWidth}`})
 // 下侧对话框
 $("#dialog").css({"height":`${1/4*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
 // 宿舍背景图
-$("#background").css({"height":`${1/2*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
+$("#background").css({"height":`${3/4*window.innerHeight}`,"width":`${window.innerWidth}`})
 // 左侧人像
 $("#background").css({"height":`${2/3*window.innerHeight}`,"width":`${3/5*window.innerWidth}`})
 // 下侧战斗栏
@@ -22,27 +22,29 @@ you = JSON.parse(localStorage.getItem("you"));
 power = JSON.parse(localStorage.getItem("power"));
 // 坑爹的localStorage不能传递方法，只能手动再造一个对象
 roommate = JSON.parse(localStorage.getItem("roommate"));
-roommate = new Roommate(roommate.words, roommate.inter, roommate.figure,roommate.figure_src,roommate.fresh);
+roommate = new Roommate(roommate.name,roommate.words, roommate.inter, roommate.figure,roommate.figure_src,roommate.fresh);
 
 /* 第一次进入时的交互 */
 // 绑定roommate对象和舍友人像图片
 roommate.figure = $("#roommate");
 roommate.figure.attr("src", roommate.figure_src);
 // 判断是否是第一次进入
-if(roommate.fresh == true)
+if (roommate.fresh == true)
 {   
     inform("你们已经成为舍友啦，快来打个招呼吧").done(function(){
-        // roommate.slide_in();
-        // roommate.hello();
+        roommate.slide_in();
+        roommate.hello();
         fresh = false;
     }
     );
     // 舍友开始交互
 }
 else
+{
     // 舍友图片从左端滑入
     roommate.slide_in();
-    // 点击会发生震颤动画，并播放语录
+}
+// 点击会发生震颤动画，并播放语录
 roommate.figure.click(function(){
     roommate.interaction();
 })
@@ -94,9 +96,9 @@ $("#check").click(function(){
 /* 训练 */
 
 $("#train").click(function(){
-    choice("你将面对本专业老师的习题考验。若能证明自己，学校将会为你升级。确定接受考验吗？").done(function(choice_res){ 
+    choice("你将面对本专业老师的习题考验。若能证明自己，学校将会为你升级。确定消耗1体力进行考验吗？").done(function(choice_res){ 
         if(choice_res == true)
-            go_to("./训练.html",["you","roommate","power"]);
+            go_to("./选择老师.html",["you","roommate","power"]);
         else
             return;
      })
@@ -105,16 +107,19 @@ $("#train").click(function(){
 /* 切磋 */
 
 $("#compete").click(function(){
-    choice("在其它学校，你将面对更加强大的敌人。要进行校外切磋吗？").done(function(choice_res){ 
+    choice("进行切磋会消耗1体力，确定要进行切磋吗？").done(function(choice_res){
         if(choice_res == true)
-            go_to("./校外地图.html",["you","roommate","power"]);
-        else
-            inform("将为你在校内随机匹配敌人").done(function(){
-                
+            choice("在其它学校，你将面对更加强大的敌人，同时消耗双倍的体力。要进行校外切磋吗？").done(function(choice_res){ 
+                if(choice_res == true)
+                    go_to("./校外地图.html",["you","roommate","power"]);
+                else
+                    inform("将为你在校内随机匹配敌人").done(function(){
+                        // 随机匹配敌人                 
+                    })
             })
-
+        else
+            return;
      })
-    
 })
 
 /* 跳过这一天 */
@@ -139,6 +144,3 @@ $("#start").click(function(){
     });
     return;
 })
-
-
-// 选择舍友

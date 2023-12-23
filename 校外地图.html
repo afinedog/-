@@ -19,24 +19,106 @@
 </head>
 <body>
     <script src="./jquery.js"></script>
+    <!-- 通知框 -->
+    <div id="inform">
+        <div> <b>通知</b> </div>
+        <div class="tiptext"></div>
+        <button type = "button" id="know" style="position: relative; left:35%; top: 30%; width:30%; height:20%"> 好的 </button>
+    </div>
+    <!-- 选择框 -->
+    <div id="choice">
+        <div> <b>抉择</b> </div>
+        <div class="tiptext"></div>
+        <button type="button" id="yes" style="position: relative; left:20%; top: 30%;  width:20%; height:20%"> 是</button>
+        <button type="button" id="no" style="position: relative; left:37%; top: 30%;  width:20%; height:20%"> 否 </button>
+    </div>
     <!-- 背景 -->
     <img src = "./图片/高校地图.png" style=" width: 100%; height: 100%;z-index: -1;">
-    <span class = "collage" style="top: 35% ; right: 30% ;">清北</span>
-    <span class = "collage" style="top: 60% ; right: 24% ;">华五</span>
-    <span class = "collage" style="top: 40% ; right: 20% ;">南开大学</span>
-    <span class = "collage" style="top: 45% ; right: 40% ;">西交</span>
-    <span class = "collage" style="top: 20% ; right: 10% ;">哈工大</span>
-    <span class = "collage" style="top: 70% ; right: 55% ;">四川大学</span>
-    <span class = "collage" style="top: 30% ; right: 13% ;">吉林大学</span>
-    <span class = "collage" style="top: 80% ; right: 20% ;">厦门大学</span>
-    <span class = "collage" style="top: 90% ; right: 25% ;">中山大学</span>
-    <span class = "collage" style="top: 70% ; right: 30% ;">武大华科</span>
+    <span class = "collage" id="清北" style="top: 35% ; right: 30% ;">清北</span>
+    <span class = "collage" id="华五" style="top: 60% ; right: 24% ;">华五</span>
+    <span class = "collage" id="南开" style="top: 40% ; right: 20% ;">南开大学</span>
+    <span class = "collage" id="西交" style="top: 45% ; right: 40% ;">西交</span>
+    <span class = "collage" id="哈工" style="top: 20% ; right: 10% ;">哈工大</span>
+    <span class = "collage" id="川大" style="top: 70% ; right: 55% ;">四川大学</span>
+    <span class = "collage" id="吉大" style="top: 30% ; right: 13% ;">吉林大学</span>
+    <span class = "collage" id="厦大" style="top: 80% ; right: 20% ;">厦门大学</span>
+    <span class = "collage" id="中山" style="top: 90% ; right: 25% ;">中山大学</span>
+    <span class = "collage" id="武科" style="top: 70% ; right: 30% ;">武大华科</span>
 
     <script src="./main.js"></script>
     <script>
         // 新建通知窗口
-        $(".college").click(function(){
-            Inform()
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#华五").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
+        })
+        $("#清北").click(function(){
+            choice(`<b>清华，北大</b><br> 强势学科：全部<br> 挑战难度：★★★★★<br> 全中国最高等级的学府，14亿人中的佼佼者。挑战他们本身就是实力的证明！`).done(function(choice_res){
+                if(choice_res == true)
+                    // 分配敌人数值，开始切磋
+                    ;
+                else
+                    return;
+            })
         })
     </script>
 </body>
