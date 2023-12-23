@@ -10,14 +10,19 @@
             font-family: KaiTi;
             font-size: 30px;
         }
+        #question{
+            text-align: center;
+        }
         input{
             scale: 2;
             border-color: transparent;
         }
         #progress{
-            background-color: green;
-            height: 30vh;
-            width: 80wh;
+            display: inline-block;
+            background-color: greenyellow;
+            position: relative; left : 50vh;
+            height: 4vh;
+            width: 80vh;
         }
         #submit{
             position: relative; right: 40%;
@@ -27,17 +32,22 @@
 <body>
     <script src="./jquery.js"></script>
     <form>
-        <legend>  </legend>
+        <fieldset>
+        <legend> 标题内容 </legend>
         <!-- 试题 -->
-        <div id="question"></div>
+        <div id="question">问题的内容（啊偶，作者还没有做完。先用作弊模式享受战斗的乐趣吧）</div>
         <!-- 进度条 -->
-        <img id="progress">
+        <div id="progress"></div>
         <!-- 选项 -->
-        <label for="selection"> <b>A</b> <input id = "A" type="radio" name = "selection"> <div id = "Aq"> <!-- 选项内容 --></div> </label> <br>
-        <label for="selection"> <b>B</b> <input id = "B" type="radio" name = "selection"> <div id = "Bq"> <!-- 选项内容 --></div> </label> <br>
-        <label for="selection"> <b>C</b> <input id = "C" type="radio" name = "selection"> <div id = "Cq"> <!-- 选项内容 --></div> </label> <br>
-        <label for="selection"> <b>D</b> <input id = "D" type="radio" name = "selection"> <div id = "Dq"> <!-- 选项内容 --></div> </label> <br>
+        <div id="selection">
+            <label for="selection"> <b>A</b> <input id = "A" type="radio" name = "selection"> <span id = "Aq"> 选项A的内容</span> </label> <br>
+            <label for="selection"> <b>B</b> <input id = "B" type="radio" name = "selection"> <span id = "Bq"> 选项B的内容</span> </label> <br>
+            <label for="selection"> <b>C</b> <input id = "C" type="radio" name = "selection"> <span id = "Cq"> 选项C的内容</span> </label> <br>
+            <label for="selection"> <b>D</b> <input id = "D" type="radio" name = "selection"> <span id = "Dq"> 选项D的内容</span> </label> <br>
+        </div>
+        
         <input type="submit" id="submit">
+    </fieldset>
     </form>
     <script src="./main.js"></script>
     <script>

@@ -1,3 +1,12 @@
+// 傻子敌人，只会攻击
+class fool extends Math_Fighter{
+    fight(){
+        this.attack();
+    }
+}
+
+
+/* BOSS */
 // YYH
 class YYH extends Math_Fighter{
     // 技能：朝7晚10，全属性+1

@@ -90,7 +90,7 @@ $("#save").click(function(){
 /* 查看个人信息 */
 
 $("#check").click(function(){ 
-    inform(`<b>${you.name}</b> <br> 学号：${you.number} <br> 性别： ${you.sex} <br> 专业：${you.major} <br> 干爹名单：${you.dad}`);
+    Inform(`<b>${you.name}</b> <br> 学号：${you.number} <br> 性别： ${you.sex} <br> 专业：${you.major} <br> 干爹名单：${you.dad}`);
  })
 
 /* 训练 */

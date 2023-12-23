@@ -26,9 +26,58 @@ class Student
         this.day = day;     // 经过天数
         this.dad = dad ;    // 干爹名单
         this.honor = honor;
+
+        switch(this.major){
+            // 每个专业的满级设置
+            case "数学专业" :   this.full_level = 7;
+            case "物理专业" :   this.full_level = 7;
+            case "计算机专业" : this.full_level = 7;
+            case "电气电子" : this.full_level = 7;
+            case "土木专业" : this.full_level = 8;
+            case "文史哲法" : this.full_level = 7;
+            case "生化环材地" : this.full_level = 8;
+            case "金融专业" : this.full_level = 7;
+            case "医学专业" : this.full_level = 8;
+            default : this.full_level = 7; // 默认是数学专业
+        }
     }
     /* 属性 */
-    name; sex; major; level; number; life; att; day; dad; honor; 
+    name; sex; major; level; number; life; att; day; dad; honor; full_level;
+
+    /* 方法 */
+    // 升级，在训练或作弊模式下调用
+    level_up(){
+        if(this.level < this.full_level)
+        {
+            var gain;
+            // 标准增长：[1,1,3,2,3]    最高增长：[2,2,5,2,5]
+            // 不仅仅要和专业有关，还要和技能有配合。
+            switch(this.major){
+                // 数学学生需要有强大的体力、心态、可支配时间，但是实操是短板，故攻击和防御比较低
+                case "数学专业": gain = [1,1,5,2,3];
+                // 物理专业同理
+                case "物理专业": gain = [1,1,5,2,3];
+                // 计算机专业需要有强大的实操水平和可支配时间，但长期996，身体不太行。所以体力和速度都是短板
+                case "计算机专业": gain = [2,1,1,1,2];
+                // 电气电子这种比较平平的专业，取较为标准的数值。在这里体现的思想是，生命要足够多，攻击力要足够小，才能更有玩法。不然战斗结束的太快了
+                case "电气电子": gain = [1,1,3,2,3];
+                // 著名牛马，纯纯的数值怪，各项都是增长最快的
+                case "土木专业": gain = [2,2,5,2,5];
+                // 攻击力和速度顶尖，但其它都不太行
+                case "文史哲法": gain = [1,1,3,2,2];
+                // 医学牲肯定要在体力和生命上下功夫啦
+                case "医学专业": gain = [1,1,5,1,3];
+                // 也是著名牲口。但相比于医学牲可以操纵自己生命值的做法，生化环材的体力更有意思
+                case "生化环材地": gain = [1,1,5,1,5];
+                // 精英人士把握了话语权，总是能更快地看到产业的风口。速度会快得多。
+                case "金融专业": gain = [1,1,2,2,3];
+            }
+            this.level += 1; this.att += gain[0]; this.def += gain[1]; this.hp += gain[2]; this.speed += gain[3]; this.life += gain[4];
+            inform(`你提升了1级，获得的增益有：<br> 攻击力 ${gain[0]} <br> 防御力 ${gain[2]} <br> 速度 ${gain[3]} <br> 体力 ${gain[4]}`);
+        }
+        else
+            inform("已提升至满级");
+    }
 }
 
 // 舍友类
@@ -155,6 +204,14 @@ class Fighter extends Student{
     // 子类Fighter的属性
     bool_running; bool_summon;
     /* 方法（技能） */
+    // 普通攻击
+    attack(){
+
+    }
+    // 普通防御
+    defend(){
+        
+    }
     // 逃课，免疫一次攻击，但下次攻击受到双倍伤害
     running()
     {
@@ -169,7 +226,9 @@ class Fighter extends Student{
         }
     }
     // 召唤干爹，获得等同于随机一个干爹的属性值一回合
-    summon()
+    summon(){
+
+    }
 }
 
 /* 不同专业的战斗类*/
@@ -237,8 +296,14 @@ function inform(text){
     $("#know").click(function(){
         // 每次点击更新图窗，都会更新人物数值
         power = [you.level, you.att, you.def, you.speed, you.life, you.hp, you.day];
-        for(var i = 0; i<$(".power").length; i++)
-            $(".power")[i].textContent = $(".power")[i].textContent.slice(0,2) + power[i];
+        if($(".power").length != 0)
+        {
+            for(var i = 0; i < $(".power").length; i++)
+                $(".power")[i].textContent = $(".power")[i].textContent.slice(0,2) + power[i];
+            // 反正只有最高等级也只有个位数，所以就直接取前三个字符喽
+            if(you.level == you.full_level)
+                $(".power")[0].textContent = $(".power")[0].textContent.slice(0.3) + "(满)";
+        }
         // 图窗消失
         vanish($("#inform"));
         deferred.resolve();
@@ -269,6 +334,31 @@ function choice(text) {
 // 若要使a为调用的值，只需要：
 //   choice("问题").done(function(choice_res) { a = choice_res; })
 
+// 信息框
+function Inform(text){
+    $("#Inform>.tiptext").html(text);
+    show($("#Inform"));
+    // 创立异步对象
+    var deferred = $.Deferred();
+    // 单击按钮后图窗消失
+    $("#know").click(function(){
+        // 每次点击更新图窗，都会更新人物数值
+        power = [you.level, you.att, you.def, you.speed, you.life, you.hp, you.day];
+        if($(".power").length != 0)
+        {
+            for(var i = 0; i < $(".power").length; i++)
+                $(".power")[i].textContent = $(".power")[i].textContent.slice(0,2) + power[i];
+            // 反正只有最高等级也只有个位数，所以就直接取前三个字符喽
+            if(you.level == you.full_level)
+                $(".power")[0].textContent = $(".power")[0].textContent.slice(0.3) + "(满)";
+        }
+        // 图窗消失
+        vanish($("#Inform"));
+        deferred.resolve();
+    });
+    return deferred.promise();
+}
+
 /* 输入网址，跳转页面 */
 // href是跳转的网址，para是传递的参数数组
 function go_to(href, para)
@@ -286,7 +376,7 @@ function go_to(href, para)
 }
 
 /* 新建版本的通知窗口 */
-function Inform(text){
+function inform_new(text){
     // 新设置一个div元素
     var $inform = $(`<div></div>`);
     $("body").append($inform);

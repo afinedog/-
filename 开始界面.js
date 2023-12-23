@@ -104,21 +104,37 @@ $("#submit").click(function () {
             // 若全部填写，则记录值并进入下一环节
             else
             {   
-                // 初始化身份
-                identity();
-                // 根据专业分配荣誉
-                // honor_check_major();
-                // 存值
-                power = [you.level, you.att,you.def,you.life,you.power,you.day];
-                // 跳转页面，输入要传递的值
-                go_to("./选择舍友.html", ["power","you"]);
+                choice("是否开启作弊模式，将等级直接提升到满级？").done(function(choice_res){ 
+                    if(choice_res == true)
+                    {
+                        identity_cheating();
+                        power = [you.level, you.att,you.def,you.life,you.power,you.day];
+                        inform("你选择了作弊模式").done(function(){
+                            // 跳转页面，输入要传递的值
+                            go_to("./选择舍友.html", ["power","you"]);
+                        })
+                    }
+                    else
+                    {
+                        // 初始化身份
+                        identity();
+                        // 根据专业分配荣誉
+                        // honor_check_major();
+                        // 存值
+                        power = [you.level, you.att,you.def,you.life,you.power,you.day];
+                        inform("你选择了普通模式").done(function(){ 
+                            // 跳转页面，输入要传递的值
+                            go_to("./选择舍友.html", ["power","you"]);
+                         })
+                    }
+                 })
+                
             }
         })
     }
 });
-// 初始化玩家身份
+// 初始化玩家身份（非作弊模式）
 function identity(){
-    // （非作弊模式）
     you = new Student(
         //姓名
         $("input[type='text']")[0].value,
@@ -127,7 +143,20 @@ function identity(){
         // 专业
         $("select")[0].value
         );
-    // （作弊模式，给出一张表单，自己填写数值）
+}
+// 初始化玩家身份（作弊模式）
+function identity_cheating(){
+    you = new Student(
+        // 姓名
+        $("input[type='text']")[0].value,
+        // 性别
+        ($("input[type='radio']")[0].checked == true) ? "男" : '' + ($("input[type='radio']")[1].checked == true)? "女" : '',
+        // 专业
+        $("select")[0].value
+        );
+    // 如果满级是7，就升级六次
+    for(var i = 1; i < you.full_level; i++)
+        you.level_up();
 }
 
 
