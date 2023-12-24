@@ -29,15 +29,15 @@ class Student
 
         switch(this.major){
             // 每个专业的满级设置
-            case "数学专业" :   this.full_level = 7;
-            case "物理专业" :   this.full_level = 7;
-            case "计算机专业" : this.full_level = 7;
-            case "电气电子" : this.full_level = 7;
-            case "土木专业" : this.full_level = 8;
-            case "文史哲法" : this.full_level = 7;
-            case "生化环材地" : this.full_level = 8;
-            case "金融专业" : this.full_level = 7;
-            case "医学专业" : this.full_level = 8;
+            case "数学专业" :   this.full_level = 7;   break;
+            case "物理专业" :   this.full_level = 7;  break;
+            case "计算机专业" : this.full_level = 7;  break;
+            case "电气电子" : this.full_level = 7;  break;
+            case "土木专业" : this.full_level = 8;  break;
+            case "文史哲法" : this.full_level = 7;  break;
+            case "生化环材地" : this.full_level = 8;  break;
+            case "金融专业" : this.full_level = 7;  break;
+            case "医学专业" : this.full_level = 8;  break;
             default : this.full_level = 7; // 默认是数学专业
         }
     }
@@ -54,23 +54,23 @@ class Student
             // 不仅仅要和专业有关，还要和技能有配合。
             switch(this.major){
                 // 数学学生需要有强大的体力、心态、可支配时间，但是实操是短板，故攻击和防御比较低
-                case "数学专业": gain = [1,1,5,2,3];
+                case "数学专业": gain = [1,1,5,2,3]; break;
                 // 物理专业同理
-                case "物理专业": gain = [1,1,5,2,3];
+                case "物理专业": gain = [1,1,5,2,3]; break;
                 // 计算机专业需要有强大的实操水平和可支配时间，但长期996，身体不太行。所以体力和速度都是短板
-                case "计算机专业": gain = [2,1,1,1,2];
+                case "计算机专业": gain = [2,1,1,1,2]; break;
                 // 电气电子这种比较平平的专业，取较为标准的数值。在这里体现的思想是，生命要足够多，攻击力要足够小，才能更有玩法。不然战斗结束的太快了
-                case "电气电子": gain = [1,1,3,2,3];
+                case "电气电子": gain = [1,1,3,2,3]; break;
                 // 著名牛马，纯纯的数值怪，各项都是增长最快的
-                case "土木专业": gain = [2,2,5,2,5];
+                case "土木专业": gain = [2,2,5,2,5]; break;
                 // 攻击力和速度顶尖，但其它都不太行
-                case "文史哲法": gain = [1,1,3,2,2];
+                case "文史哲法": gain = [1,1,3,2,2]; break;
                 // 医学牲肯定要在体力和生命上下功夫啦
-                case "医学专业": gain = [1,1,5,1,3];
+                case "医学专业": gain = [1,1,5,1,3]; break;
                 // 也是著名牲口。但相比于医学牲可以操纵自己生命值的做法，生化环材的体力更有意思
-                case "生化环材地": gain = [1,1,5,1,5];
+                case "生化环材地": gain = [1,1,5,1,5]; break;
                 // 精英人士把握了话语权，总是能更快地看到产业的风口。速度会快得多。
-                case "金融专业": gain = [1,1,2,2,3];
+                case "金融专业": gain = [1,1,2,2,3]; break;
             }
             this.level += 1; this.att += gain[0]; this.def += gain[1]; this.hp += gain[2]; this.speed += gain[3]; this.life += gain[4];
             inform(`你提升了1级，获得的增益有：<br> 攻击力 ${gain[0]} <br> 防御力 ${gain[2]} <br> 速度 ${gain[3]} <br> 体力 ${gain[4]}`);
@@ -175,16 +175,37 @@ class Teacher{
     question;   // 试题，十个字符串的一维数组
     answer;     // ，十个数字
     selection;  // 选项，arr[10][4]的二维数组
-    /* 方法 */
-    check(){
-
-    }
 }
 
 // 战斗说明函数
 function report(color = "black",text){
     $("#dialog").css("font-color",color);
-    $("#dialog").append(text + "<br>");
+    var i = 0;
+    function type(text) { 
+        // 打字机效果
+        $("#dialog").append(text[i]);
+        i += 1;
+        if(i == text.length )
+        {
+            // 换行
+            $("#dialog").append("<br>");
+            clearInterval(timer);
+        }
+     }
+    var timer = setInterval(type(text),50);
+    // 检测战斗是否终止
+    if(you.life <= 0)
+    {
+        inform("战斗结束，你输了！")
+        you.dad += `${enemy.name}`;
+        go_to("./寝室.html", ["you,power,roommate"]);
+    }
+
+    else if(enemy.life <= 0)
+    {
+        inform("战斗结束，你赢了！")
+        go_to("./寝室.html", ["you,power,roommate"]);
+    }
 }
 
 // 战斗类，继承自学生类
@@ -203,21 +224,31 @@ class Fighter extends Student{
     name; sex; major; level; number; life; att; day; dad; honor;
     // 子类Fighter的属性
     bool_running; bool_summon;
-    /* 方法（技能） */
-    // 普通攻击
+    /* 方法（敌人的操作） */
+    // 敌人的普通攻击
     attack(){
+        // 暂时存储生命
+        var you_temp_life = you.life;
+        // 结算伤害
+        you.life -= this.att - you.def;
+        // 战斗报告
+        report(`red`,`${enemy.name} 攻击了 ${you.name}。${you.name} 受到 ${(you_temp_life-you.life > 0) ? you_temp_life-you.life : 0} 点伤害`);
+    }
+    // 敌人的普通防御
+    defend(){
 
     }
-    // 普通防御
-    defend(){
-        
-    }
+    /* 方法（你的低级技能） */
     // 逃课，免疫一次攻击，但下次攻击受到双倍伤害
     running()
     {
         if(this.bool_running == true)
         {
-            $().click();
+            // 点击由你设置的逃课技能按钮
+            $(you.running_num).click(function(){ 
+
+            });
+            // 战斗报告
             report("aqua",`${you_fighter} 使用了逃课，将会回避下回合对手的攻击。`)
         }
         else 
@@ -244,9 +275,10 @@ class Math_Fighter extends Fighter{
     {
         // 父类的构造函数
         super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,bool_running,bool_summon);
-        // 子类
+        // 子类的构造函数
         
     }
+
 }
 // 医学
 class Medicine_Fighter extends Fighter{
@@ -341,7 +373,7 @@ function Inform(text){
     // 创立异步对象
     var deferred = $.Deferred();
     // 单击按钮后图窗消失
-    $("#know").click(function(){
+    $("#Know").click(function(){
         // 每次点击更新图窗，都会更新人物数值
         power = [you.level, you.att, you.def, you.speed, you.life, you.hp, you.day];
         if($(".power").length != 0)

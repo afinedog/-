@@ -8,17 +8,23 @@
 </head>
 <body>
     <script src = "jquery.js"></script>
-    <div class="p"> 松松1 </div>
+    <div class="p" id="A"> 松松1 </div>
     <div class="p" style="position: absolute;"> 松松2  </div>
     <script>
-        class name{
-            constructor(){
-                this.value = 1;
+        var i = 0; var text = "sdklfjalskdjfladjflsakjfalksjdflkafjslakjfds";
+        function type(text) { 
+            // 打字机效果
+            $("#A").html(text[i]);
+            i+=1;
+            console.log("yes");
+            if(i == text.length)
+            {
+                // 换行
+                $("#A").append("<br>");
+                clearInterval(timer);
             }
-            value; name = "name";
-        }
-        a = new name();
-        b = eval(`new ${a.name}`)
+         }
+        var timer = setInterval(type(text),50);
     </script>
 </body>
 </html>

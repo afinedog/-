@@ -114,7 +114,7 @@ button:active{
     background-color: grey;
 }
 /*  */
-#inform>div,#choice>div,#inform2>div{
+#inform>div,#choice>div,#Inform>div{
     position:relative; top:5%;
     text-align: center;
     font-size:20px;

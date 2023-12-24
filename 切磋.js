@@ -27,16 +27,16 @@ enemy = JSON.parse(localStorage.getItem("enemy"));
 // 根据专业不同，敌人继承不同对象
 if(enemy.bool_boss == false)
 {
-    switch(enemy.major){
-        case "数学专业": enemy = new Math_Fighter();
-        case "物理专业": enemy = new Math_Fighter();
-        case "计算机专业": enemy = new Math_Fighter();
-        case "电气电子": enemy = new Math_Fighter();
-        case "土木专业": enemy = new Math_Fighter();
-        case "医学专业": enemy = new Medicine_Fighter();
-        case "文史哲法": enemy = new Math_Fighter();
-        case "生化环材地": enemy = new Math_Fighter();
-        case "金融专业": enemy = new Math_Fighter();
+    switch(enemy.major){ 
+        case "数学专业": enemy = new Math_Fighter(); break;
+        case "物理专业": enemy = new Math_Fighter(); break;
+        case "计算机专业": enemy = new Math_Fighter(); break;
+        case "电气电子": enemy = new Math_Fighter(); break;
+        case "土木专业": enemy = new Math_Fighter(); break;
+        case "医学专业": enemy = new Medicine_Fighter(); break;
+        case "文史哲法": enemy = new Math_Fighter(); break;
+        case "生化环材地": enemy = new Math_Fighter(); break;
+        case "金融专业": enemy = new Math_Fighter(); break;
     }
 }
 else
@@ -48,8 +48,8 @@ else
 /* 创建对战对象 */
 // 回合数
 var round_num = 1;
-// 初始化敌人
-enemy = new Fighter("李鼠");
+// 初始化敌人（先来打个傻子）
+enemy = new fool("李鼠");
 
 /* 查看自己和敌人的信息 */
 $("#you_information")
@@ -74,27 +74,54 @@ inform(`战斗开始，你的对手是 ${enemy.major} 的 ${enemy.name}`);
 report(`现在是第 ${round} 回合`);
 
 /* 回合制战斗操作（最难的异步部分来了） */
-var deferred = $.Deferred();
-/* 点击攻击 */
-$("#attack").click(function(){
-    deferred.done(function(){ 
-        var hurt = you_fighter.att - enemy.def;
-        enemy.hp -= hurt;
-        report(`red`,`${you.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${hurt} 点伤害`)
+function compete()
+{
+    // var声明的是函数作用域，let声明的是块级作用域
+    let deferred = $.Deferred();
+    /* 点击攻击 */
+    $("#attack").click(function(){
+        // 行为关键词
+        var action = "攻击";
+        // 暂时存储生命值
+        var temp_life = enemy.life;
+        // def对象被解决，可以执行敌人操作
+        deferred.resolve(action);
+        var hurt = temp_life-enemy.life;
+        // 双方操作完毕，进行结算
+        report(`red`,`${you.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${(hurt>0) ? hurt : 0} 点伤害`);
+        return deferred.promise();
     })
- })
-/* 点击防御 */
-$("#attack").click(function(){
-    var temp_def = you.def;
-    you.def = you.def*2;
-    // def对象被解决，可以执行回调（敌人的攻击攻击）
-    deferred.resolve();
-    you.def = temp_def;
-    return deferred.promise()
- })
-//
-deferred.done(){
-    // 敌人执行操作逻辑
-    enemy.fight();
+    /* 点击防御 */
+    $("#defend").click(function(){
+        // 行为关键词
+        var action = "防御"
+        // 暂时存储防御值
+        var temp_def = you.def;
+        // 防御变为2倍
+        you.def = you.def*2;
+        report(`aqua`, `${you.name} 进行了防御`);
+        // def对象被解决，可以执行回调（敌人的攻击攻击）
+        deferred.resolve(action);
+        // 双方结算完后，防御变回原来的值
+        you.def = temp_def;
+        return deferred.promise()
+    })
     //
+    deferred.done(function (action) { 
+        // 敌人执行操作
+        enemy.fight();
+        // 敌人操作完毕，进行结算
+        switch (action) {
+            case "攻击":
+                enemy.life -= (you.att - enemy.def > 0) ? you.att - enemy.def : 0;
+                break;
+            case "防御":
+                // 防御的结算由敌人那边进行
+                break;
+            default:
+                break;
+        }
+        // 递归调用（会不会造成内存溢出啊……）
+        compete();
+    })
 }
