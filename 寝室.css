@@ -36,9 +36,8 @@
 }
 /* 配招设置 */
 #skill-edit{
-    float: right;
     position: absolute;
-    top: 0vh;
+    top: 1vh; left: 130vh;
     /* 字体设计 */
     align-content: center; vertical-align: middle; font-size: larger;
     /* 边框 */

@@ -1,5 +1,9 @@
 // 傻子敌人，只会攻击
 class fool extends Math_Fighter{
+    constructor()
+    {
+        super()
+    }
     // fight方法是所有智能操作的结合，BOSS里会写的很复杂
     fight(){
         this.attack();

@@ -81,6 +81,12 @@ form{
 input{
     width: 30px; height: 30px;
 }
+/* 文件选择 */
+#save_load{
+    display: inline;
+    width: 50vh;
+    height: 20vh;
+}
 
 /* 通知页面 */
 #inform,#choice{

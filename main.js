@@ -12,7 +12,8 @@ class Student
                 att = 1, def = 1, hp = 5,speed = 1, // 攻击、防御、生命值
                 day = 0,
                 dad = [],     // 干爹名单)
-                honor = []    // 已获得的荣誉
+                honor = [],    // 已获得的荣誉
+                full_level = 7  // 默认是数学专业
             )
     // 作弊模式专用
     {
@@ -26,6 +27,7 @@ class Student
         this.day = day;     // 经过天数
         this.dad = dad ;    // 干爹名单
         this.honor = honor;
+        this.full_level = full_level;
 
         switch(this.major){
             // 每个专业的满级设置
@@ -71,6 +73,8 @@ class Student
                 case "生化环材地": gain = [1,1,5,1,5]; break;
                 // 精英人士把握了话语权，总是能更快地看到产业的风口。速度会快得多。
                 case "金融专业": gain = [1,1,2,2,3]; break;
+                // 默认是数学专业
+                default : gain = [1,1,5,2,3]; break;
             }
             this.level += 1; this.att += gain[0]; this.def += gain[1]; this.hp += gain[2]; this.speed += gain[3]; this.life += gain[4];
             inform(`你提升了1级，获得的增益有：<br> 攻击力 ${gain[0]} <br> 防御力 ${gain[2]} <br> 速度 ${gain[3]} <br> 体力 ${gain[4]}`);
@@ -107,15 +111,15 @@ class Roommate{
     // 震颤，被点击时触发的动画
     tremble(){
         // jquery链调用
-        this.figure.animate({left: "-=10wh",top:"-=10wh"}, 50)
-        .animate({left: "+=20wh", top:"+=20wh"}, 50)
-        .animate({left: "-=20wh", top:"-=20wh"}, 50)
-        .animate({left: "+=20wh", top:"+=20wh"}, 50)
-        .animate({left: "-=10wh", top:"-=10wh"}, 50)
+        this.figure.animate({left: "-=5vh",top:"-=5vh"}, 100)
+        .animate({left: "+=10vh", top:"+=10vh"}, 100)
+        .animate({left: "-=10vh", top:"-=10vh"}, 100)
+        .animate({left: "+=10vh", top:"+=10vh"}, 100)
+        .animate({left: "-=5vh", top:"-=5vh"}, 100)
     }
     // 互动，需要当点击人物时触发
     interaction(){
-        $("dialog").text(this.inter[Math.floor(Math.random()*this.inter.length)]);
+        $("#dialog").text(this.inter[Math.floor(Math.random()*this.inter.length)]);
         this.tremble();
     }
     // 打招呼，在选择舍友后，进入寝室时立即触发
@@ -152,7 +156,7 @@ class Roommate{
             }
             else
             {
-                $("#dialog").html("");
+                $("#dialog").html("（点击你的舍友可以与TA互动哦）");
                 return;
             }
          })
@@ -215,16 +219,16 @@ class Fighter extends Student{
         // 装填为学生类
         super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor);
         // 子类属性（战斗素质）
-        power
+        this.power = [level,att,def,hp,speed,life];
         // 子类属性（是否携带技能）
         this.bool_running = bool_running; this.bool_summon = bool_summon;
     }
     /* 属性 */
     // 父类Student的属性
-    name; sex; major; level; number; life; att; day; dad; honor;
+    name; sex; major; level; number; life; att; day; dad; honor; power;
     // 子类Fighter的属性
     bool_running; bool_summon;
-    /* 方法（敌人的操作） */
+    /* 方法（敌人的操作）*/
     // 敌人的普通攻击
     attack(){
         // 暂时存储生命

@@ -5,6 +5,7 @@ $(".flex-right div").css({"height":`${1/6*window.innerHeight}`,"width":`${1/6*wi
 // 上侧数值栏
 $(".flex-up").css({"height":`${1/12*window.innerHeight}`,"width":`${2/3*window.innerWidth}`})
 $(".flex-up div").css({"height":`${1/12*window.innerHeight}`,"width":`${1/8*window.innerWidth}`})
+$("#skill-edit").css({"height":`${1/12*window.innerHeight}`,"width":`${1/9*window.innerWidth}`})
 // 下侧对话框
 $("#dialog").css({"height":`${1/4*window.innerHeight}`,"width":`${4/5*window.innerWidth}`})
 // 宿舍背景图
@@ -18,9 +19,12 @@ $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*win
 // 能力值数组(6维)，分别是：等级、攻击、防御、生命、体力、天数
 // var power = [you.level, you.att,you.def,you.life,you.power,you.day];
 /* 从 localStorage 中取值 */
-you = JSON.parse(localStorage.getItem("you"));
 power = JSON.parse(localStorage.getItem("power"));
 // 坑爹的localStorage不能传递方法，只能手动再造一个对象
+// 学生类
+you = JSON.parse(localStorage.getItem("you"));
+you = new Student(you.name,you.sex,you.major,you.num,you.level,you.life,you.att,you.def,you.hp,you.speed,you.day,you.dad,you.honor,you.full_level)
+// 室友类
 roommate = JSON.parse(localStorage.getItem("roommate"));
 roommate = new Roommate(roommate.name,roommate.words, roommate.inter, roommate.figure,roommate.figure_src,roommate.fresh);
 
@@ -45,7 +49,7 @@ else
     roommate.slide_in();
 }
 // 点击会发生震颤动画，并播放语录
-roommate.figure.click(function(){
+$("#roommate").click(function(){
     roommate.interaction();
 })
 

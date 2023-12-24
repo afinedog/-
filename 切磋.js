@@ -71,11 +71,11 @@ $("#back").click(function(){
 
 
 inform(`战斗开始，你的对手是 ${enemy.major} 的 ${enemy.name}`);
-report(`现在是第 ${round} 回合`);
 
 /* 回合制战斗操作（最难的异步部分来了） */
 function compete()
 {
+    report(`现在是第 ${round_num} 回合`);
     // var声明的是函数作用域，let声明的是块级作用域
     let deferred = $.Deferred();
     /* 点击攻击 */
@@ -121,6 +121,7 @@ function compete()
             default:
                 break;
         }
+        round_num += 1;
         // 递归调用（会不会造成内存溢出啊……）
         compete();
     })

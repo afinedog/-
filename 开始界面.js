@@ -1,3 +1,7 @@
+// 清除浏览器缓存的内容
+$(document).ready(function(){
+    localStorage.clear()
+});
 
 /* 游戏规则 */
 // 规则说明页面出现函数
@@ -90,6 +94,8 @@ $("input[type='radio']").each(function(){$(this).click(function(){
 })})
 // 单击提交时
 $("#submit").click(function () { 
+    // 检测是否输入存档
+    check_save();
     // 检查姓名和性别有无填写，若没有则显示提示语句并退出函数
     if ($("input[type='text']")[0].value == '' || ($("input[type='radio']")[0].checked == false && $("input[type='radio']")[1].checked == false))
         { $("#tip2").css("opacity",1);    $("#tip1").css("opacity",0);  return;  }
@@ -104,6 +110,7 @@ $("#submit").click(function () {
             // 若全部填写，则记录值并进入下一环节
             else
             {   
+                // 若没有存档，询问是否开启作弊模式
                 choice("是否开启作弊模式，将等级直接提升到满级？").done(function(choice_res){ 
                     if(choice_res == true)
                     {
@@ -133,6 +140,33 @@ $("#submit").click(function () {
         })
     }
 });
+// 检测存档函数（一个input就解决了……）
+function check_save(){    
+    var files = $('#save_load').prop('files');//获取到文件列表
+    if(files.length == 0){
+        return;
+    }
+    else
+    {
+        const reader = new FileReader();       //新建一个FileReader
+        reader.readAsText(files[0], "UTF-8"); //读取文件 
+        // 文件读取成功后的回调函数，
+        reader.onload = function(content){
+            console.log(content)
+            // 获取文件内容，转化为字符串
+            const fileString = content.target.result;
+            // 将字符串转换为JSON
+            const data = JSON.parse(fileString);
+            // JSON可以直接赋值为对象（存储多个对象的JSON是对象数组格式）
+            you = data[0];
+            roommate = data[1];
+            power = data[2];
+            inform("成功加载存档，即将跳转页面").done(function(){
+                go_to("./寝室.html", ["you","power","roommate"]);
+            })
+        }
+    }
+}
 // 初始化玩家身份（非作弊模式）
 function identity(){
     you = new Student(
