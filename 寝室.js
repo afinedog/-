@@ -97,8 +97,141 @@ $("#check").click(function(){
     Inform(`<b>${you.name}</b> <br> 学号：${you.number} <br> 性别： ${you.sex} <br> 专业：${you.major} <br> 干爹名单：${you.dad}`);
  })
 
-/* 训练 */
+/* 技能选择 */
+// 技能选择框出现、填入技能
+$("#skill-edit").click(function(){
+    // 高于底部对话框，低于通知、选择、信息
+    show("#skill-set",3);
+    for(let i = 0; i< 4; i++)
+        $(".skill-carry")[i].textContent = you.skill_carry_name[i];
+    for(let i = 0; i < 8; i++)
+        $(".skill")[i].textContent = you.skill_name[i];
+})
+// 点击技能后，边框变绿（这段代码有点费解，但是比较简洁……emm，我本来可以分别对.skill和.skill-carry写一个函数的，但感觉比较费空间）
+function select(selector){
+    $(selector).click(function(){
+        // 记录当前被点击的元素
+        focus_this = $(this);
+        // 遍历 ".skill" 的所有元素
+        $(selector).each(function(index){
+            // 若序号为i的技能已被选中，且i不等于被正在被点击的技能的序号，则撤销序号为i的技能的被选中状态（边框变回透明）
+            if( focus_this.css("border-color") == "rgb(0, 128, 0)" || index != $(this).index())
+                $(this).css("border-color","transparent");
+        })
+        // 当前被点击的元素边框变绿
+        $(this).css("border-color","green");
+    })
+}
+select(".skill"), select(".skill-carry");
 
+// 我也不想搞全局变量，可是这样比较方便
+var page = 1;
+// 翻页功能
+$("#left").click(function(){
+    // 若不是第一页
+    // if( you.skill_name.indexOf(  $(".skill")[0].textContent  ) != 0)
+    if(page != 1)
+    {   
+        // 往左翻一页
+        page -= 1;
+        for(var i = 0; i < 8; i++)
+            $(".skill")[i].textContent = you.skill_name[i + 8*(page-1)];
+    }
+    else if(page == 1)
+        inform("已经是第一页了");
+})
+$("#right").click(function(){
+    // 最后一页的最后一个技能的0~7内的序号
+    var num =  you.skill_name.length % 8;
+    // num序号下的技能名字
+    var last_name = $(".skill")[num].textContent
+    // 若不是最后一页
+    // if(you.skill_name.indexOf(last_name) != you.skill_name.length-1 )
+    if(page != Math.ceil(you.skill_name.length/8) )
+    {
+        //往右翻一页
+        page += 1;
+        for(var i = 0; i < 8; i++)
+            $(".skill")[i].textContent = you.skill_name[i+8];
+    }
+    else if(page == Math.ceil(you.skill_name.length/8))
+        inform("已经是最后一页了");
+})
+// 查看按钮
+$("#look").click(function(){ 
+    // 携带技能的名字和说明
+    var skill_carry_name;  var skill_carry_state;
+    // 可选技能的名字和说明
+    var skill_select_name; var skill_select_state;
+    
+    $(".skill-carry").each(function(){ 
+        if($(this).css("border-color") == "rgb(0, 128, 0)")
+        {
+            // 技能名字直接引用就行了
+            skill_carry_name = $(this).text();
+            // 技能描述首先需要找到索引
+            var index = you.skill_name.indexOf($(this).text());
+            // 若该技能不是已有技能
+            if(index == -1)
+                {console.log(index);
+                skill_carry_state = "这个技能不存在"}
+            // 若是已有技能
+            else
+                // 然后取对象的技能描述索引值
+                skill_carry_state = you.skill_state[index];
+        }
+     });
+    
+     $(".skill").each(function(){ 
+        if($(this).css("border-color") == "rgb(0, 128, 0)")
+        {
+            // 技能名字直接引用就行了
+            skill_select_name = $(this).text();
+            // 技能描述首先需要找到索引
+            var index = you.skill_name.indexOf($(this).text());
+            // 若该技能不是已有技能
+            if(index == -1)
+                {console.log(index)
+                skill_select_state = "这个技能不存在"}
+            // 若是已有技能
+            else
+                // 然后取对象的技能描述索引值
+                skill_select_state = you.skill_state[index];
+        }
+    })
+    // 打印到信息栏中
+    Inform(`<b>已携带的技能名称</b>：${skill_carry_name} <br> <b>已携带的技能描述</b>：${skill_carry_state} <br> <b>未携带的技能名称</b>：<br> ${skill_select_name} <br> <b>未携带的技能描述</b> ${skill_select_state}`); 
+});
+// 设置按钮
+$("#set").click(function(){ 
+    var index; var skill_carry_name; var skill_select_name;
+    $(".skill-carry").each(function(){ 
+        if($(this).css("border-color") == "rgb(0, 128, 0)")
+        {
+            // 技能名字直接引用就行了
+            skill_carry_name = $(this).text();
+            // 技能描述首先需要找到索引
+            index = you.skill_name.indexOf($(this).text());
+        }
+    })
+    $(".skill").each(function(){ 
+        if($(this).css("border-color") == "rgb(0, 128, 0)")
+        {
+            // 技能名字直接引用就行了
+            skill_select_name = $(this).text();
+        }
+    })
+    you.skill_carry_name[index] = skill_select_name;
+    // 重新填入已选技能
+    for(let i = 0; i< 4; i++)
+        $(".skill-carry")[i].textContent = you.skill_carry_name[i];
+});
+
+$("#close").click(function(){ 
+    vanish("#skill-set");
+ })
+
+/* 训练 */
 $("#train").click(function(){
     choice("你将面对本专业老师的习题考验。若能证明自己，学校将会为你升级。确定消耗1体力进行考验吗？").done(function(choice_res){ 
         if(choice_res == true)

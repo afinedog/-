@@ -1,7 +1,7 @@
 // 清除浏览器缓存的内容
-$(document).ready(function(){
-    localStorage.clear()
-});
+// $(document).ready(function(){
+//     localStorage.clear()
+// });
 
 /* 游戏规则 */
 // 规则说明页面出现函数
@@ -152,7 +152,6 @@ function check_save(){
         reader.readAsText(files[0], "UTF-8"); //读取文件 
         // 文件读取成功后的回调函数，
         reader.onload = function(content){
-            console.log(content)
             // 获取文件内容，转化为字符串
             const fileString = content.target.result;
             // 将字符串转换为JSON

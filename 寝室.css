@@ -16,7 +16,7 @@
     background-color: gold;
     /* 行高 */
     line-height: 130%;  
-    z-index: 10;
+    z-index: 2;
 }
 
 /* 右侧的选项按钮 */
@@ -86,7 +86,7 @@
 
 
 
-div>div:not(.flex-up>div):active{
+div>div:not(.flex-up>div):active, #skill-edit:active{
     background-color: grey;
 }
 
@@ -112,14 +112,14 @@ button{
 button:active{
     background-color: grey;
 }
-/*  */
-#inform>div,#choice>div,#Inform>div{
+/* 重置框里面的内容 */
+#inform>div,#choice>div,#Inform>div,#skill-set>div{
     position:relative; top:5%;
     text-align: center;
     font-size:20px;
 }
 /* 信息框 */
-#Inform{
+#Inform,#skill-set{
     /* 位置设置 */
     position: absolute;
     left: 20%; top: 10%;
@@ -131,4 +131,43 @@ button:active{
     opacity: 0; z-index: -1;
     /* 文字设置 */
     overflow: scroll;
+}
+/* 技能框 */
+/* 翻页按钮 */
+.page{
+    height: 10%; width: 5%;
+    position: absolute;
+    top: 50%;
+}
+#left{
+    left: 5%;
+}
+#right{
+    right: 5%;
+}
+/* 技能按键 */
+.skill,.skill-carry{
+    display: inline-block;
+    position: relative; left: 11vh;
+    height: 10%; width: 15%;
+    text-align: center; vertical-align: middle;
+    margin: 4vh 2vh 4vh 2vh;
+    border-style: solid;
+    border-width: 3px;
+    border-color:  transparent;
+}
+#look,#set,#close{
+    position: relative;
+    top: 5%;
+    width: 20%; height: 10%;
+}
+#look{
+    left: 20%;
+}
+#set{
+    left: 37%;
+}
+#close{
+    top:  10%;
+    left: 39.5%;
 }

@@ -9,6 +9,7 @@ h1,h2,p{
 img{
     display: block;
     flex-direction: row;
+    width: 100%; height: 70%;
     /* position: relative;
     left: 3%; bottom: 5%; */
 }
@@ -20,8 +21,11 @@ img:hover{
 div{
     display: inline-block;
 }
+div.img-container{
+    width: 50vh; height: 70vh;
+    margin: 4vh;
+}
 div.img-intro{
-    display: block;
     width: 100%;
 }
 

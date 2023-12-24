@@ -1,17 +1,21 @@
+/* 随机匹配的敌人 */
+// 数学专业
+
+/* BOSS */
 // 傻子敌人，只会攻击
 class fool extends Math_Fighter{
     constructor()
     {
-        super()
+        // 名字必须和类名一致，因为在切磋.js中要根据名字将其再次实例化为相应的类。
+        super("fool");
     }
+    /* 属性 */
+    bool_boss = true;
     // fight方法是所有智能操作的结合，BOSS里会写的很复杂
     fight(){
         this.attack();
     }
 }
-
-
-/* BOSS */
 // YYH
 class YYH extends Math_Fighter{
     // 技能：朝7晚10，全属性+1

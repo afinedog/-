@@ -13,7 +13,7 @@ class Student
                 day = 0,
                 dad = [],     // 干爹名单)
                 honor = [],    // 已获得的荣誉
-                full_level = 7  // 默认是数学专业
+                full_level = 7,  // 默认是数学专业
             )
     // 作弊模式专用
     {
@@ -45,6 +45,12 @@ class Student
     }
     /* 属性 */
     name; sex; major; level; number; life; att; day; dad; honor; full_level;
+    // 已获得的技能（字符串数组）
+    skill_name = [];
+    // 技能说明
+    skill_state = [];
+    // 携带的技能（四元字符串数组）
+    skill_carry_name = [];
 
     /* 方法 */
     // 升级，在训练或作弊模式下调用
@@ -214,54 +220,65 @@ function report(color = "black",text){
 
 // 战斗类，继承自学生类
 class Fighter extends Student{
-    constructor(name, sex, major, level, number,life, att,def,hp,speed, day, dad, honor,bool_running,bool_summon)
+    constructor(name, sex, major, level, number,life, att,def,hp,speed, day, dad, honor,skill_name,skill_carry_name)
     {
         // 装填为学生类
-        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor);
+        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor, skill_name, skill_carry_name);
         // 子类属性（战斗素质）
         this.power = [level,att,def,hp,speed,life];
-        // 子类属性（是否携带技能）
-        this.bool_running = bool_running; this.bool_summon = bool_summon;
     }
-    /* 属性 */
-    // 父类Student的属性
-    name; sex; major; level; number; life; att; day; dad; honor; power;
-    // 子类Fighter的属性
-    bool_running; bool_summon;
+
+    /* 新增的属性 */
+    // 是否进行防御（唉，这一步明明可以优化的）
+    bool_def = false;
+
     /* 方法（敌人的操作）*/
     // 敌人的普通攻击
-    attack(){
+    enemy_attack(){
         // 暂时存储生命
-        var you_temp_life = you.life;
+        var you_temp_life = you_fighter.life;
         // 结算伤害
-        you.life -= this.att - you.def;
-        // 战斗报告
-        report(`red`,`${enemy.name} 攻击了 ${you.name}。${you.name} 受到 ${(you_temp_life-you.life > 0) ? you_temp_life-you.life : 0} 点伤害`);
+        you_fighter.life -= enemy.att - you_fighter.def;
+        // 战斗报告（红色）
+        report(`red`,`${enemy.name} 攻击了 ${you.name}。${you.name} 受到 ${(you_temp_life-you_fighter.life > 0) ? you_temp_life-you_fighter.life : 0} 点伤害`);
     }
     // 敌人的普通防御
-    defend(){
-
+    enemy_defend(){
+        // 将是否防御设为“是”
+        enemy.bool_def = true;
+        // 防御变为2倍
+        enemy.def = enemy.def*2;
+        // 战斗报告（蓝色）
+        report(`aqua`,`${enemy.name} 进行了防御`)
     }
-    /* 方法（你的低级技能） */
-    // 逃课，免疫一次攻击，但下次攻击受到双倍伤害
+    /* 方法（低级技能） */
+    // 逃课，免疫一次攻击，但防御力永久-2
     running()
     {
-        if(this.bool_running == true)
+        // 若携带了逃课技能
+        if(this.skill_carry_name.indexOf("逃课") != -1)
         {
             // 点击由你设置的逃课技能按钮
-            $(you.running_num).click(function(){ 
-
+            $(this.skill_carry_name.indexOf("逃课")).click(function(){ 
+                // 其实就是锁血
+                var temp_life = this.life;
+                // 该回合结束
+                deferred.resolve();
+                // 回合结束，将血量改回来并降低2
+                this.life = temp_life;
+                this.def -= 2;
+                return deferred.promise();
             });
-            // 战斗报告
-            report("aqua",`${you_fighter} 使用了逃课，将会回避下回合对手的攻击。`)
+            // 战斗报告（绿色）
+            report("green",`${you_fighter} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-2`)
         }
         else 
         {
-            ;
+            inform("错误，你没有携带逃课技能。");
         }
     }
     // 召唤干爹，获得等同于随机一个干爹的属性值一回合
-    summon(){
+    you_summon(){
 
     }
 }
@@ -319,13 +336,13 @@ class Civil_Fighter extends Fighter{
 
 /* 通知和判断图窗 */
 // 普通的消失函数
-function vanish(ele){ $(ele).css({"opacity": "0", "z-index":"-1"}); }
-function show(ele) { $(ele).css({"opacity": "1", "z-index":"100"}); }
+function vanish(ele){ $(ele).css({"opacity": "0", "z-index":"-1"});  $(ele).css("pointer-events"),"none"; };
+function show(ele,num) { $(ele).css({"opacity": "1", "z-index":`${num}`}); $(ele).css("pointer-events"),"auto"; }
 
 // 通知函数，只有接受一个选项
 function inform(text){
     $("#inform>.tiptext").html(text);
-    show($("#inform"));
+    show($("#inform"),10);
     // 创立异步对象
     var deferred = $.Deferred();
     // 单击按钮后图窗消失
@@ -351,7 +368,7 @@ function inform(text){
 // 判断函数，有是或否两个选项
 function choice(text) {
     $("#choice>.tiptext").html(text);
-    show("#choice");
+    show("#choice",10);
     var choice_res;
     var deferred = $.Deferred();
     $('#yes').click(function() {
@@ -373,7 +390,7 @@ function choice(text) {
 // 信息框
 function Inform(text){
     $("#Inform>.tiptext").html(text);
-    show($("#Inform"));
+    show($("#Inform"),10);
     // 创立异步对象
     var deferred = $.Deferred();
     // 单击按钮后图窗消失

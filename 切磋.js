@@ -24,6 +24,7 @@ power = JSON.parse(localStorage.getItem("power"));
 // 坑爹的localStorage不能传递方法，只能手动再造一个对象
 roommate = JSON.parse(localStorage.getItem("roommate"));
 enemy = JSON.parse(localStorage.getItem("enemy"));
+
 // 根据专业不同，敌人继承不同对象
 if(enemy.bool_boss == false)
 {
@@ -54,10 +55,13 @@ enemy = new fool("李鼠");
 /* 查看自己和敌人的信息 */
 $("#you_information")
 $("#enemy_information").click(function(){ 
-    Inform(`敌人：${enemy.name}：<br> 专业：${enemy.major}<br> 技能1：${enemy} <br> 技能2：${enemy} <br> 技能3：${enemy} <br> 技能4：${enemy} <br>`)
+    Inform(`敌人：${enemy.name}：<br> 专业：${enemy.major}<br> 技能1：${enemy.skill_name[0]} <br> 技能2：${enemy.skill_name[1]} <br> 技能3：${enemy.skill_name[2]} <br> 技能4：${enemy.skill_name[3]} <br>`)
  })
 
-/* 技能切换 */
+/* 技能栏初始化 */
+$("#skill1").html
+
+/* 技能栏切换 */
 // 切换到技能
 $("#skill").click(function(){
     $(".flex-right").animate({position:"relative",left:`33vh`},500);
@@ -96,14 +100,14 @@ function compete()
         // 行为关键词
         var action = "防御"
         // 暂时存储防御值
-        var temp_def = you.def;
+        var temp_def = you_fighter.def;
         // 防御变为2倍
-        you.def = you.def*2;
-        report(`aqua`, `${you.name} 进行了防御`);
+        you_fighter.def = you.def*2;
+        report(`aqua`, `${you_fighter.name} 进行了防御`);
         // def对象被解决，可以执行回调（敌人的攻击攻击）
         deferred.resolve(action);
         // 双方结算完后，防御变回原来的值
-        you.def = temp_def;
+        you_fighter.def = temp_def;
         return deferred.promise()
     })
     //
@@ -113,7 +117,7 @@ function compete()
         // 敌人操作完毕，进行结算
         switch (action) {
             case "攻击":
-                enemy.life -= (you.att - enemy.def > 0) ? you.att - enemy.def : 0;
+                enemy.life -= (you_fighter.att - enemy.def > 0) ? you_fighter.att - enemy.def : 0;
                 break;
             case "防御":
                 // 防御的结算由敌人那边进行
@@ -121,6 +125,12 @@ function compete()
             default:
                 break;
         }
+        // 若敌人进行了防御，将其
+        if(enemy.bool_def == true)
+            {
+                enemy.def = enemy.def/2;
+                enemy.bool_def = false;
+            }
         round_num += 1;
         // 递归调用（会不会造成内存溢出啊……）
         compete();

@@ -27,11 +27,20 @@
 
 ## 得到的教训
 
-- absolute定位会自动将block换为inline，故提示框内文本用relative即可
-- 开启一个新页面固然会对css等定位减轻很大的负担。但js却无法直接将参数传递到新页面中。必须使用本地存库或cookie才行，所以我需要一个新方法
-- jquery在内容中动态输入html标签的方法：使用 ``$.html(内容)``
-  - jquery选择器选择的是jquery对象，而不是元素对象。故 `$[0]` 是元素，不能用jquery方法，但可以直接用原生js设置属性，`$` 是jquery对象，无元素属性，但可以用jquery方法设置属性
+- **CSS定位**
+  - absolute定位会自动将block换为inline，故提示框内文本用relative即可
+  - 百分比单位是相对其父元素的，而不是子元素
+  - wh不是屏幕宽度。非百分比长度一律用vh即可。字符单位一律用em（单个字符的长度即可）
+- **CSS**
+  - border记得写solid
+  - border有时候合并写不行，分开写就可以。建议每次都分开写 `border-style: solid;` `border-width: 3px` `border-color: black`
+  - 在jquery中用比较 `border-color` 时，返回的是rgb字符串，**且rgb字符串的每个逗号后面有一个空格。若不打出这个空格，结果便永远是false**
+- **开启一个新页面**
+  - 这固然会对css等定位减轻很大的负担。但js却无法直接将参数传递到新页面中。必须使用本地存库或cookie才行，所以我需要一个新方法
+- **jquery在内容中动态输入html标签的方法**：使用 ``$.html(内容)``
+- **jquery选择器选择的是jquery对象**，而不是元素对象。故 `$[0]` 是元素，不能用jquery方法，但可以直接用原生js设置属性，`$` 是jquery对象，无元素属性，但可以用jquery方法设置属性
   - 若在元素中使用jquery方法，报错是 `$[0].text() is not a function`
+  - 但是可以通过**嵌套$ 的方法** `$($(".skill")[0])` 来选中第一个元素的jquery对象
 - `localStorage` 是将对象转化为字符串，然后放入JSON文件中传递的。因此它不能传递方法，需要重新赋值（坑死我了）
 - 刷新网页间隔不要太短，有时元素的改变跟不上，导致你以为出了bug，其实没有
 
