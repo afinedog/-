@@ -4,10 +4,7 @@
     font-size: 30px;
 }
 
-/* 舍友人像 */
-
 /* 底部对话框 */
-
 #dialog{
     position: absolute;
     left: 2vh; bottom: 0.1vh;
@@ -35,6 +32,8 @@
     border: solid 1px black;
     box-shadow: 4px;
 }
+
+
 /* 配招设置 */
 #skill-edit{
     position: absolute;
@@ -45,6 +44,7 @@
     border: solid 1px black;
     box-shadow: 4px;
 }
+
 
 /* 右侧的技能按钮 */
 .flex-right2{
@@ -63,6 +63,7 @@
     box-shadow: 4px;
 }
 
+
 /* 上侧的信息 */
 .flex-up{
     display: flex;
@@ -73,16 +74,14 @@
 .flex-up>div{
     border: solid red 2px;
 }
-/* 底部战斗框 */
-.flex-down{
+.flex-up2{
     display: flex;
+    position: relative; left: 1vh;
     flex-direction: row;
-    position: absolute;
-    bottom: 0px;
-    opacity: 0;
+    background-color: white;
 }
-.flex-down>div{
-    border: solid green 4px;
+.flex-up2>div{
+    border: solid blue 2px;
 }
 
 
@@ -155,7 +154,7 @@ button:active{
     margin: 4vh 2vh 4vh 2vh;
     border-style: solid;
     border-width: 3px;
-    border-color:  transparent;
+    border-color:  lightgrey;
 }
 #look,#set,#close{
     position: relative;
@@ -171,4 +170,12 @@ button:active{
 #close{
     top:  10%;
     left: 39.5%;
+}
+
+/* 切磋场景的BOSS字幕 */
+#BOSS{
+    opacity: 0;
+    z-index: -1;
+    position: absolute;
+    width: 40%; height: 20%;
 }

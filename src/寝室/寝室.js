@@ -42,7 +42,7 @@ if (roommate.fresh == true)
     inform("你们已经成为舍友啦，快来打个招呼吧").done(function(){
         roommate.slide_in();
         roommate.hello();
-        fresh = false;
+        roommate.fresh = false;
     }
     );
     // 舍友开始交互
@@ -106,10 +106,10 @@ $("#check").click(function(){
 $("#skill-edit").click(function(){
     // 高于底部对话框，低于通知、选择、信息
     show("#skill-set",3);
-    for(let i = 0; i< 4; i++)
-        $(".skill-carry")[i].textContent = you.skill_carry_name[i];
-    for(let i = 0; i < 8; i++)
-        $(".skill")[i].textContent = you.skill_name[i];
+    for(let i = 0; i< you.skill_carry.length; i++)
+        $(".skill-carry")[i].textContent = you.skill_carry[i].name;
+    for(let i = 0; i < you.skill_gotten.length; i++)
+        $(".skill")[i].textContent = you.skill_gotten[i].name;
 })
 // 点击技能后，边框变绿（这段代码有点费解，但是比较简洁……emm，我本来可以分别对.skill和.skill-carry写一个函数的，但感觉比较费空间）
 function select(selector){
@@ -120,7 +120,7 @@ function select(selector){
         $(selector).each(function(index){
             // 若序号为i的技能已被选中，且i不等于被正在被点击的技能的序号，则撤销序号为i的技能的被选中状态（边框变回透明）
             if( focus_this.css("border-color") == "rgb(0, 128, 0)" || index != $(this).index())
-                $(this).css("border-color","transparent");
+                $(this).css("border-color","lightgrey");
         })
         // 当前被点击的元素边框变绿
         $(this).css("border-color","green");
@@ -139,34 +139,34 @@ $("#left").click(function(){
         // 往左翻一页
         page -= 1;
         for(var i = 0; i < 8; i++)
-            $(".skill")[i].textContent = you.skill_name[i + 8*(page-1)];
+            $(".skill")[i].textContent = you.skill_gotten[i + 8*(page-1)].name;
     }
     else if(page == 1)
         inform("已经是第一页了");
 })
 $("#right").click(function(){
     // 最后一页的最后一个技能的0~7内的序号
-    var num =  you.skill_name.length % 8;
+    var num =  you.skill_gotten.length % 8;
     // num序号下的技能名字
-    var last_name = $(".skill")[num].textContent
+    // var last_name = $(".skill")[num].textContent
     // 若不是最后一页
     // if(you.skill_name.indexOf(last_name) != you.skill_name.length-1 )
-    if(page != Math.ceil(you.skill_name.length/8) )
+    if(page != Math.ceil(you.skill_gotten.length / 8) )
     {
         //往右翻一页
         page += 1;
         for(var i = 0; i < 8; i++)
-            $(".skill")[i].textContent = you.skill_name[i+8];
+            $(".skill")[i].textContent = you.skill_gotten[i+8].name;
     }
-    else if(page == Math.ceil(you.skill_name.length/8))
+    else if(page == Math.ceil(you.skill_gotten.length / 8))
         inform("已经是最后一页了");
 })
 // 查看按钮
 $("#look").click(function(){ 
     // 携带技能的名字和说明
-    var skill_carry_name;  var skill_carry_state;
+    var skill_carry_name,  skill_carry_state;
     // 可选技能的名字和说明
-    var skill_select_name; var skill_select_state;
+    var skill_select_name, skill_select_state;
     
     $(".skill-carry").each(function(){ 
         if($(this).css("border-color") == "rgb(0, 128, 0)")
@@ -174,15 +174,14 @@ $("#look").click(function(){
             // 技能名字直接引用就行了
             skill_carry_name = $(this).text();
             // 技能描述首先需要找到索引
-            var index = you.skill_name.indexOf($(this).text());
+            var index = you.get_skill_carry_index(skill_carry_name);
             // 若该技能不是已有技能
             if(index == -1)
-                {console.log(index);
-                skill_carry_state = "这个技能不存在"}
+                skill_carry_state = "这个技能不存在"
             // 若是已有技能
             else
                 // 然后取对象的技能描述索引值
-                skill_carry_state = you.skill_state[index];
+                skill_carry_state = you.skill_carry[index].state;
         }
      });
     
@@ -192,46 +191,72 @@ $("#look").click(function(){
             // 技能名字直接引用就行了
             skill_select_name = $(this).text();
             // 技能描述首先需要找到索引
-            var index = you.skill_name.indexOf($(this).text());
+            var index = you.get_skill_index(skill_select_name);
             // 若该技能不是已有技能
             if(index == -1)
-                {console.log(index)
-                skill_select_state = "这个技能不存在"}
+                skill_select_state = "这个技能不存在"
             // 若是已有技能
             else
                 // 然后取对象的技能描述索引值
-                skill_select_state = you.skill_state[index];
+                skill_select_state = you.skill_gotten[index].state;
         }
     })
     // 打印到信息栏中
     Inform(`<b>已携带的技能名称</b>：${skill_carry_name} <br> <b>已携带的技能描述</b>：${skill_carry_state} <br> <b>未携带的技能名称</b>：<br> ${skill_select_name} <br> <b>未携带的技能描述</b> ${skill_select_state}`); 
 });
+
 // 设置按钮
-$("#set").click(function(){ 
-    var index; var skill_carry_name; var skill_select_name;
-    $(".skill-carry").each(function(){ 
-        if($(this).css("border-color") == "rgb(0, 128, 0)")
-        {
-            // 技能名字直接引用就行了
-            skill_carry_name = $(this).text();
-            // 技能描述首先需要找到索引
-            index = you.skill_name.indexOf($(this).text());
-        }
-    })
+$("#set").click(function(){
+    var carry_name, index_carry, select_name, index_select;
+    var error = false;
     $(".skill").each(function(){ 
         if($(this).css("border-color") == "rgb(0, 128, 0)")
         {
-            // 技能名字直接引用就行了
-            skill_select_name = $(this).text();
+            select_name = $(this).text();
+            // console.log("被选中的未携带技能名是" + select_name);
+
+            // 找到（被选中的未携带技能）的（在总技能中的索引）
+            index_select = you.get_skill_index(select_name);
+            // 检查该技能是否已获得
+            if(index_select == -1)
+            {
+                inform("禁止携带不存在的技能");
+                error = true;
+            }   
+            // console.log("index_select：" + index_select)
         }
     })
-    you.skill_carry_name[index] = skill_select_name;
+    if(error == true)
+        return;
+    $(".skill-carry").each(function(){ 
+        if($(this).css("border-color") == "rgb(0, 128, 0)")
+        {
+            // 找到（被选中的已携带技能）的（在已携带技能中的索引）
+            carry_name = $(this).text();
+            // console.log("被选中的已携带技能名是" + carry_name);
+
+            // 检查该技能是否重复
+            if(you.skill_carry.includes( you.get_skill(select_name) ))
+            {
+                inform("禁止携带两个一样的技能");
+                return;
+            }
+            else
+                index_carry = you.get_skill_carry_index(carry_name);
+            // console.log("index_carry：" + index_carry);
+
+            // 将（该索引下的已携带技能）重新赋值为（该索引下的未携带技能）即可
+            you.skill_carry[index_carry] = you.skill_total[index_select];
+        }
+    })
+    // console.log(`现在的已携带技能 ${index_carry} 是`); console.log(you.skill_carry[index_carry]);
     // 重新填入已选技能
-    for(let i = 0; i< 4; i++)
-        $(".skill-carry")[i].textContent = you.skill_carry_name[i];
+    for(let i = 0; i< you.skill_carry.length; i++)
+        $(".skill-carry")[i].textContent = you.skill_carry[i].name;
 });
+
 // 关闭技能栏
-$("#close").click(function(){ 
+$("#close").click(function(){
     vanish("#skill-set");
  })
 

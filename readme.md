@@ -43,6 +43,9 @@
   - 但是可以通过**嵌套$ 的方法** `$($(".skill")[0])` 来选中第一个元素的jquery对象
 - `localStorage` 是将对象转化为字符串，然后放入JSON文件中传递的。因此它不能传递方法，需要重新赋值（坑死我了）
 - 刷新网页间隔不要太短，有时元素的改变跟不上，导致你以为出了bug，其实没有
+- **eval** 在 `for(i in obj)` 中没有用，需要用传统循环 `for(i=0; i<obj.length; i++)`
+- **不要在递归函数里写click，这会导致调用click函数多次。**
+
 
 ## jQuery中异步对象 Deferred 的用法
 
@@ -53,7 +56,6 @@
 - 通过相应的函数，可以手动将对象设置为这三个状态
   - `$.Deferred().resolve().state()` 将对象设置为操作成功，然后返回当前状态
   - resolve()函数的参数会传递到done()方法中
-- when方法
 - notify和progress方法
   - 调用 `notify()` 时，`progress()`函数会执行
   - **应用**：定期返回进度条的进度
@@ -69,11 +71,29 @@
 - pipe方法：
   - 在调用其它方法的回调之前，先调用pipe指定的函数
   - **应用**：数据的初步处理
-- promise对象：
+- promise对象：其实就是ES6里的promise。它和deferred都有then方法
   - **异步意义**：在promise对象所在的语句被执行前，done函数不会执行
   - **返回promise的意义**：promise()本质就是一个异步对象。done方法就是promise对象的方法。
     - 若两个函数返回同一个deferred对象的promise，则它们会保持同步
   - **应用**：做某些函数（显示选择框，在点击选项后返回一个布尔值）的返回值。那么在resolve()函数（如点击按钮时触发resolve函数）调用前，done函数（网页跳转）不会执行
+- when方法：多个回调函数都进行完后才进行的函数
+  - **参数**：多个回调函数的promise对象
+
+```js
+// 异步对象
+var deferred = $.Deferred();
+// 异步函数
+function a(){
+  console.log("第一步");
+  deferred.resolve();
+  console.log("第三步");
+  return deferred.promise();
+}
+// deferred对象的done方法
+deferred.done(()=>{console.log("第二步");  })
+// promise对象的done方法（和then方法相同）
+a().then(()=>{ console.log("最后一步"); }, ()=>{console.log("不应该被执行")});
+```
 
 ### done的链式调用
 

@@ -1,3 +1,12 @@
+// 技能类（用技能对象数组表示技能得了）
+class Skill{
+    // 技能名、技能描述、调用名
+    constructor(name, state, invoke)
+    {
+        this.name = name; this.state = state; this.invoke = invoke;
+    }
+    name; state; invoke;
+}
 // 学生类
 class Student
 {
@@ -40,12 +49,23 @@ class Student
     }
     /* 属性 */
     name; sex; major; level; number; life; att; day = 1; dad = []; honor = []; full_level;
-    // 已获得的技能（字符串数组）
-    skill_name = ["逃课","召唤干爹"];
-    // 技能说明
-    skill_state = ["逃课：回避当前回合攻击（其实就是锁血）。但会使防御力永久下降2","召唤干爹：随机选择一个干爹，用其随机技能替换本技能"];
-    // 携带的技能（四元字符串数组）
-    skill_carry_name = ["逃课","召唤干爹"];
+    // 总技能对象数组（召唤干爹用）
+    skill_total = [
+        new Skill("逃课","逃课：回避当前回合攻击（其实就是锁血）。但会使防御力永久下降2", "running"),
+        new Skill("召唤干爹","召唤干爹：随机选择一个干爹，用其随机技能替换本技能", "you_summon")
+    ];
+    // 技能对象数组
+    skill_gotten = [this.skill_total[0],this.skill_total[1]];
+    // 已携带技能对象数组
+    skill_carry = [this.skill_total[0],this.skill_total[1]];
+    // /* 下面这一段本来没想写的…… */
+    // // 已获得的技能（字符串数组）
+    // skill_name = ["逃课","召唤干爹"];
+    // // 技能说明
+    // skill_state = ["逃课：回避当前回合攻击（其实就是锁血）。但会使防御力永久下降2","召唤干爹：随机选择一个干爹，用其随机技能替换本技能"];
+    // // 携带的技能（四元字符串数组）
+    // skill_carry_name = ["逃课","召唤干爹"];
+
 
     /* 方法 */
     // 升级，在训练或作弊模式下调用
@@ -83,19 +103,50 @@ class Student
         else
             inform("已提升至满级");
     }
-    // 列出技能描述
-    skill_carry_state(){
-        // 携带技能的索引
-        var index; var temp;
-        for(i=0; i<4; i++)
-        {
-            // 携带的技能全部技能栏中的序号
-            index = this.skill_name.indexOf(this.skill_carry_name[i]);
-            // 将相应的技能介绍取出，并存放在临时数组中
-            temp[i] = this.skill_carry_state[index];
-        }
-        return temp;
+    // 已知技能名，获取其在（总技能数组）中的索引
+    get_skill_index(known_name){
+        return this.skill_total.findIndex(skill => skill.name == known_name);
     }
+    // 已知技能名，获取其在（已携带技能数组）中的索引
+    get_skill_carry_index(known_name){
+        return this.skill_carry.findIndex(skill => skill.name == known_name)
+    }
+    // 已知技能名，获取其技能对象
+    get_skill(known_name){
+        var index = this.get_skill_index(known_name);
+        if(index == -1)
+            inform("错误，没有此技能")
+        else
+            return this.skill_total[index]
+    }
+
+    // // 列出技能描述
+    // skill_carry_state(){
+    //     // 携带技能的索引
+    //     var index; var temp;
+    //     for(i=0; i<4; i++)
+    //     {
+    //         // 携带的技能全部技能栏中的序号
+    //         index = this.skill_name.indexOf(this.skill_carry_name[i]);
+    //         // 将相应的技能介绍取出，并存放在临时数组中
+    //         temp[i] = this.skill_carry_state[index];
+    //     }
+    //     return temp;
+    // }
+    // // 输入技能名，获取其在已获得技能中的索引
+    // get_skill_index(skill){
+    //     return this.skill_name.indexOf(skill)
+    // }
+    // // 输入技能名，获取其在总技能中的索引（召唤干爹用）
+    // get_skill_total_index(skill){
+    //     return this.skill_total_name.indexOf(skill)
+    // }
+    // // 技能替换，输入当前携带的技能名skill1，和未携带的技能名skill2，然后用skill2替换skill1
+    // skill_alter(skill1,skill2){
+    //     // 获取技能名的已获得中索引
+    //     index1 = this.get_skill_index(skill1);  index2 = this.get_skill_index(skill2);
+    //     index1 = 
+    // }
 }
 
 // 舍友类
@@ -222,9 +273,9 @@ function report(color = "black",text){
              })
         else
         {
-            you.dad.push(`${enemy.name}`);
             inform("战斗结束，你输了。干爹栏+1").done(function(){
-                go_to("../寝室/寝室.html", ["you,power,roommate"])
+                you.dad.push(`${enemy.name}`);
+                go_to("../寝室/寝室.html", ["you,power,roommate"]);
              })
         }
     }
@@ -250,13 +301,41 @@ class Fighter extends Student{
     }
 
     /* 方法（低级技能） */
+        /* 攻击 */
+        attack(){
+                // 行为关键词
+                var action = "攻击";
+                // 暂时存储敌方生命值
+                var temp_hp = enemy.hp;
+                // deferred_1对象被解决
+                deferred_you_1.resolve(action);
+                var hurt = temp_hp-enemy.hp;
+                // 双方操作完毕，进行结算
+                report(`red`,`${you.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${(hurt>0) ? hurt : 0} 点伤害`);
+                return deferred_you_1.promise();
+        }
+        /* 防御 */
+        defend(){
+                // 行为关键词
+                var action = "防御"
+                // 暂时存储防御值
+                var temp_def = you_fighter.def;
+                // 防御变为2倍
+                you_fighter.def = you.def*2;
+                report(`aqua`, `${you_fighter.name} 进行了防御`);
+                // def对象被解决，可以执行回调（敌人的攻击攻击）
+                deferred.resolve(action);
+                // 双方结算完后，防御变回原来的值
+                you_fighter.def = temp_def;
+                return deferred_you_1.promise()
+            }
     // 逃课，免疫一次攻击，但防御力永久-2
     running()
     {
         // 获取当前技能在携带技能中的序号
-        var index = this.skill_carry_name.indexOf("逃课")
+        var index = this.get_skill_carry_index("逃课")
         // 将技能名填入按钮
-        $(`#skill${index}`).text()
+        $(`#skill${index}`).text("逃课");
         // 若携带了逃课技能
         if(index != -1)
         {
@@ -280,28 +359,32 @@ class Fighter extends Student{
     // 召唤干爹，获得等同于随机一个干爹的属性值一回合
     you_summon(){
         // 获取当前技能在携带技能中的序号
-        var index = this.you_fighter.skill_carry_name.indexOf("召唤干爹");
+        var index = this.get_skill_carry_index("召唤干爹");
         if(index != -1)
         {
+            // 将技能名填入按钮
+            $(`#skill${index}`).text("召唤干爹");
+
             // 点击由你设置的召唤干爹技能按钮
             $(`#skill${index}`).click(function(){ 
                 // 随机选取一个干爹
-                var dad_now = you_fighter.dad[Math.floor(Math.random()*this.dad.length)];
-                // 随机选取一个技能替换你当前的技能
-                var skill_now = you_fighter.skill_carry_name[index] = dad_now.skill_carry_name[Math.floor(Math.random()*this.dad.length)];
+                var dad_now = this.dad[Math.floor(Math.random()*this.dad.length)];
+                // 随机选取干爹一个技能替换你当前的技能
+                var skill_now = this.skill_carry[index] = dad_now.skill_carry[ Math.floor( Math.random()*this.dad.length ) ];
                 // 替换技能按钮的名字
-                $(`#skill${index}`).text(index) = skill_now;
+                $(`#skill${index}`).text(skill_now.name);
                 // 替换技能按钮的事件
                 $(`#skill${index}`).click(function(){
                     // 问题在于，BOSS的技能怎么写，才能让我在Fighter类没有声明该技能的基础上让它执行？
-                    eval(skill_now);
+                    // 答案是：在自己的Fighter类上全写出来得了。反正对战时只需要操作 skill_carry
+                    eval(skill_now.invoke);
                 })
                 // 结束回合
                 deferred.resolve();
                 return deferred.promise();
             });
             // 战斗报告（绿色）
-            report("green",`${you_fighter.name} 使用了召唤干爹，获得了干爹 ${dad_now} 的技能 ${skill_now}`)
+            report("green",`${this.name} 使用了召唤干爹，获得了干爹 ${dad_now} 的技能 ${skill_now.name}`)
         }
         else 
             return;
@@ -322,13 +405,16 @@ class Enemy extends Student{
     }
     /* 新增的属性 */
     // 是否进行防御（唉，这一步明明可以优化的）
-    bool_def = false; bool_boss = false;
+    bool_def = false;
+    // 是否是boss
+    bool_boss = false;
 
     /* 方法（敌人的操作）*/
     // 敌人的普通攻击
     enemy_attack(){
         // 暂时存储生命
         var you_temp_hp = you_fighter.hp;
+        deferred_enemy_1.resolve();
         // 结算伤害
         you_fighter.hp -= enemy.att - you_fighter.def;
         // 战斗报告（红色）
