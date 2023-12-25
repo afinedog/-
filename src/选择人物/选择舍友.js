@@ -53,11 +53,11 @@ $("div.img-container").click(function(){
             // 交互语言
             ["对的对的。诶，不对不对。欸，对的对的","确实确实","trash trash", "这游戏真的挺好玩吧？","帅的一批，兄弟","你TM……行，可以。"]
         );
-    roommate.figure_src = `${"./图片/" + $(this).find("img").attr("alt") + "人像.png"}`;
+    roommate.figure_src = `${"../../assets/图片/" + $(this).find("img").attr("alt") + "人像.png"}`;
     // 第一次进入宿舍
     roommate.fresh = true;
     // 获得荣誉
 
     // 跳转到寝室页面
-    go_to("./寝室.html",["you","power","roommate"]);
+    go_to("../寝室/寝室.html",["you","power","roommate"]);
 })

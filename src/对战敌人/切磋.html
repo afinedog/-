@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>战斗界面</title>
-    <link rel="stylesheet" href="寝室.css">
+    <link rel="stylesheet" href="../寝室/寝室.css">
 </head>
 <body>
-    <script src="./jquery.js"></script>
+    <script src="../../lib/jquery.js"></script>
     
     <!-- 通知框 -->
     <div id="inform">
@@ -24,7 +24,7 @@
         <button type="button" id="no" style="position: relative; left:37%; top: 30%;  width:20%; height:20%"> 否 </button>
     </div>
     <!-- 更大的通知框（信息框） -->
-    <div id="inform2">
+    <div id="Inform">
         <div> <b>信息</b> </div>
         <div class="tiptext"></div>
         <button type = "button" id="Know" style="position: relative; left:40%; top: 80%; width:20%; height:10%"> 好的 </button>
@@ -68,18 +68,9 @@
 
     <!-- 寝室条纹 -->
     <h1 style="display: inline-block; position:relative; left:1vh;">切磋</h1>
-
     
-    <!-- 底部战斗框 -->    
-        <div class="flex-down">
-            <div>攻击</div>
-            <div>防御</div>
-            <div>技能</div>
-            <div>逃跑</div>
-        </div>
-    
-    <script src="./main.js"></script>
-    <!-- <script src="./fighter.js"></script> -->
+    <script src="../人物类/main.js"></script>
+    <script src="../人物类/fighter.js"></script>
     <script src="./切磋.js"></script>
 </body>
 </html>

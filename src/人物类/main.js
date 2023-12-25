@@ -7,13 +7,10 @@ class Student
                 sex = 'bug',
                 major = 'bug',
                 num = `${202100091100 + Math.round(100*Math.random())}`,  // 用反引号生成随机数数字
-                level = 1,
-                life = 5,       // 体力
+                level = 1, full_level = 7,   // 默认是数学专业
+                life = 5,full_life = 5,       // 体力
                 att = 1, def = 1, hp = 5,speed = 1, // 攻击、防御、生命值
-                day = 0,
-                dad = [],     // 干爹名单)
-                honor = [],    // 已获得的荣誉
-                full_level = 7,  // 默认是数学专业
+                day = 0, dad = [], honor = []
             )
     // 作弊模式专用
     {
@@ -22,12 +19,10 @@ class Student
         this.major = major;     // 专业
         this.number = num;      // 学号
         this.level = level;     // 等级
-        this.life = life;       // 体力
+        this.life = life; this.full_life = full_life;       // 体力
         this.att = att;  this.def = def;  this.hp = hp; this.speed = speed; // 攻击、防御、生命值、速度
-        this.day = day;     // 经过天数
-        this.dad = dad ;    // 干爹名单
-        this.honor = honor;
         this.full_level = full_level;
+        this.day = day; this.dad = dad; this.honor = honor;
 
         switch(this.major){
             // 每个专业的满级设置
@@ -44,13 +39,13 @@ class Student
         }
     }
     /* 属性 */
-    name; sex; major; level; number; life; att; day; dad; honor; full_level;
+    name; sex; major; level; number; life; att; day = 1; dad = []; honor = []; full_level;
     // 已获得的技能（字符串数组）
-    skill_name = [];
+    skill_name = ["逃课","召唤干爹"];
     // 技能说明
-    skill_state = [];
+    skill_state = ["逃课：回避当前回合攻击（其实就是锁血）。但会使防御力永久下降2","召唤干爹：随机选择一个干爹，用其随机技能替换本技能"];
     // 携带的技能（四元字符串数组）
-    skill_carry_name = [];
+    skill_carry_name = ["逃课","召唤干爹"];
 
     /* 方法 */
     // 升级，在训练或作弊模式下调用
@@ -82,11 +77,24 @@ class Student
                 // 默认是数学专业
                 default : gain = [1,1,5,2,3]; break;
             }
-            this.level += 1; this.att += gain[0]; this.def += gain[1]; this.hp += gain[2]; this.speed += gain[3]; this.life += gain[4];
+            this.level += 1; this.att += gain[0]; this.def += gain[1]; this.hp += gain[2]; this.speed += gain[3]; this.full_life += gain[4]; this.life = this.full_life;
             inform(`你提升了1级，获得的增益有：<br> 攻击力 ${gain[0]} <br> 防御力 ${gain[2]} <br> 速度 ${gain[3]} <br> 体力 ${gain[4]}`);
         }
         else
             inform("已提升至满级");
+    }
+    // 列出技能描述
+    skill_carry_state(){
+        // 携带技能的索引
+        var index; var temp;
+        for(i=0; i<4; i++)
+        {
+            // 携带的技能全部技能栏中的序号
+            index = this.skill_name.indexOf(this.skill_carry_name[i]);
+            // 将相应的技能介绍取出，并存放在临时数组中
+            temp[i] = this.skill_carry_state[index];
+        }
+        return temp;
     }
 }
 
@@ -125,6 +133,7 @@ class Roommate{
     }
     // 互动，需要当点击人物时触发
     interaction(){
+        // 随机选取互动数组的一个元素，输入到对话框中
         $("#dialog").text(this.inter[Math.floor(Math.random()*this.inter.length)]);
         this.tremble();
     }
@@ -190,57 +199,140 @@ class Teacher{
 // 战斗说明函数
 function report(color = "black",text){
     $("#dialog").css("font-color",color);
-    var i = 0;
-    function type(text) { 
-        // 打字机效果
-        $("#dialog").append(text[i]);
-        i += 1;
-        if(i == text.length )
-        {
-            // 换行
-            $("#dialog").append("<br>");
-            clearInterval(timer);
-        }
-     }
-    var timer = setInterval(type(text),50);
+    // var i = 0;
+    // function type(text) { 
+    //     // 打字机效果
+    //     $("#dialog").append(text[i]);
+    //     i += 1;
+    //     if(i == text.length )
+    //     {
+    //         // 换行
+    //         $("#dialog").append("<br>");
+    //         clearInterval(timer);
+    //     }
+    //  }
+    // var timer = setInterval(type(text),50);
+    $("#dialog").append(text + "<br>");
     // 检测战斗是否终止
-    if(you.life <= 0)
+    if(you_fighter.hp <= 0)
     {
-        inform("战斗结束，你输了！")
-        you.dad += `${enemy.name}`;
-        go_to("./寝室.html", ["you,power,roommate"]);
+        if( you_fighter.dad.includes(enemy.name))
+            inform("战斗结束，你又输给了干爹。").done(function(){ 
+                go_to("../寝室./寝室.html", ["you,power,roommate"])
+             })
+        else
+        {
+            you.dad.push(`${enemy.name}`);
+            inform("战斗结束，你输了。干爹栏+1").done(function(){
+                go_to("../寝室/寝室.html", ["you,power,roommate"])
+             })
+        }
     }
 
-    else if(enemy.life <= 0)
+    else if(enemy.hp <= 0)
     {
         inform("战斗结束，你赢了！")
-        go_to("./寝室.html", ["you,power,roommate"]);
+        go_to("../寝室/寝室.html", ["you,power,roommate"]);
     }
 }
 
 // 战斗类，继承自学生类
 class Fighter extends Student{
-    constructor(name, sex, major, level, number,life, att,def,hp,speed, day, dad, honor,skill_name,skill_carry_name)
+    constructor(student)
     {
         // 装填为学生类
-        super(name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor, skill_name, skill_carry_name);
+        super(student.name, student.sex, student.major, student.number,
+            student.level,student.full_level,
+            student.life,student.full_life,
+            student.att, student.def, student.hp, student.speed);
         // 子类属性（战斗素质）
-        this.power = [level,att,def,hp,speed,life];
+        this.power = [this.level, this.att, this.def, this.hp, this.speed, this.life];
     }
 
+    /* 方法（低级技能） */
+    // 逃课，免疫一次攻击，但防御力永久-2
+    running()
+    {
+        // 获取当前技能在携带技能中的序号
+        var index = this.skill_carry_name.indexOf("逃课")
+        // 将技能名填入按钮
+        $(`#skill${index}`).text()
+        // 若携带了逃课技能
+        if(index != -1)
+        {
+            // 点击由你设置的逃课技能按钮
+            $(`#skill${index}`).click(function(){ 
+                // 其实就是锁血
+                var temp_hp = this.hp;
+                // 该回合结束
+                deferred.resolve();
+                // 回合结束，将血量改回来并降低2
+                this.hp = temp_hp;
+                this.def -= 2;
+                return deferred.promise();
+            });
+            // 战斗报告（绿色）
+            report("green",`${you_fighter.name} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-2`)
+        }
+        else 
+            return;
+    }
+    // 召唤干爹，获得等同于随机一个干爹的属性值一回合
+    you_summon(){
+        // 获取当前技能在携带技能中的序号
+        var index = this.you_fighter.skill_carry_name.indexOf("召唤干爹");
+        if(index != -1)
+        {
+            // 点击由你设置的召唤干爹技能按钮
+            $(`#skill${index}`).click(function(){ 
+                // 随机选取一个干爹
+                var dad_now = you_fighter.dad[Math.floor(Math.random()*this.dad.length)];
+                // 随机选取一个技能替换你当前的技能
+                var skill_now = you_fighter.skill_carry_name[index] = dad_now.skill_carry_name[Math.floor(Math.random()*this.dad.length)];
+                // 替换技能按钮的名字
+                $(`#skill${index}`).text(index) = skill_now;
+                // 替换技能按钮的事件
+                $(`#skill${index}`).click(function(){
+                    // 问题在于，BOSS的技能怎么写，才能让我在Fighter类没有声明该技能的基础上让它执行？
+                    eval(skill_now);
+                })
+                // 结束回合
+                deferred.resolve();
+                return deferred.promise();
+            });
+            // 战斗报告（绿色）
+            report("green",`${you_fighter.name} 使用了召唤干爹，获得了干爹 ${dad_now} 的技能 ${skill_now}`)
+        }
+        else 
+            return;
+    }
+}
+
+/* 敌人类 */
+class Enemy extends Student{
+    constructor(student)
+    {
+        // 装填为学生类
+        super(student.name, student.sex, student.major, student.number,
+            student.level,student.full_level,
+            student.life,student.full_life,
+            student.att, student.def, student.hp, student.speed);
+        // 子类属性（战斗素质）
+        this.power = [this.level, this.att, this.def, this.hp, this.speed, this.life];
+    }
     /* 新增的属性 */
     // 是否进行防御（唉，这一步明明可以优化的）
-    bool_def = false;
+    bool_def = false; bool_boss = false;
 
     /* 方法（敌人的操作）*/
     // 敌人的普通攻击
     enemy_attack(){
         // 暂时存储生命
-        var you_temp_life = you_fighter.life;
+        var you_temp_hp = you_fighter.hp;
         // 结算伤害
-        you_fighter.life -= enemy.att - you_fighter.def;
+        you_fighter.hp -= enemy.att - you_fighter.def;
         // 战斗报告（红色）
-        report(`red`,`${enemy.name} 攻击了 ${you.name}。${you.name} 受到 ${(you_temp_life-you_fighter.life > 0) ? you_temp_life-you_fighter.life : 0} 点伤害`);
+        report(`red`,`${enemy.name} 攻击了 ${you_fighter.name}。${you_fighter.name} 受到 ${(you_temp_hp-you_fighter.hp > 0) ? you_temp_hp-you_fighter.hp : 0} 点伤害`);
     }
     // 敌人的普通防御
     enemy_defend(){
@@ -251,44 +343,27 @@ class Fighter extends Student{
         // 战斗报告（蓝色）
         report(`aqua`,`${enemy.name} 进行了防御`)
     }
-    /* 方法（低级技能） */
-    // 逃课，免疫一次攻击，但防御力永久-2
-    running()
-    {
-        // 若携带了逃课技能
-        if(this.skill_carry_name.indexOf("逃课") != -1)
-        {
-            // 点击由你设置的逃课技能按钮
-            $(this.skill_carry_name.indexOf("逃课")).click(function(){ 
-                // 其实就是锁血
-                var temp_life = this.life;
-                // 该回合结束
-                deferred.resolve();
-                // 回合结束，将血量改回来并降低2
-                this.life = temp_life;
-                this.def -= 2;
-                return deferred.promise();
-            });
-            // 战斗报告（绿色）
-            report("green",`${you_fighter} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-2`)
-        }
-        else 
-        {
-            inform("错误，你没有携带逃课技能。");
-        }
-    }
-    // 召唤干爹，获得等同于随机一个干爹的属性值一回合
-    you_summon(){
-
+    // 敌人的逃课
+    enemy_running(){
+        // 其实就是锁血
+        var temp_hp = this.hp;
+        // 该回合结束
+        deferred.resolve();
+        // 回合结束，将血量改回来并降低2
+        this.hp = temp_hp;
+        this.def -= 2;
+        // 战斗报告（绿色）
+        report("green",`${this.name} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-2`)
+        return deferred.promise();
     }
 }
 
 /* 不同专业的战斗类*/
 // 数学
-class Math_Fighter extends Fighter{
+class Math_Fighter extends Enemy{
     constructor(
         // 父类Fighter的属性
-        name, sex, major, level, number, life, att,def,hp,speed, day, dad, honor,
+        name, sex, major = "数学专业", level, number, life, att,def,hp,speed, day, dad, honor,
         bool_running,bool_summon,
         // 子类的属性
 

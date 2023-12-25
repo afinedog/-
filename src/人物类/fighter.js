@@ -1,44 +1,48 @@
+you = JSON.parse(localStorage.getItem("you"));
 /* 随机匹配的敌人 */
 // 数学专业
-
+mate = new Fighter(you)
 /* BOSS */
-// 傻子敌人，只会攻击
-class fool extends Math_Fighter{
+// 数学专业的傻子敌人，只会攻击
+class LiShu extends Enemy{
     constructor()
     {
         // 名字必须和类名一致，因为在切磋.js中要根据名字将其再次实例化为相应的类。
-        super("fool");
+        super( new Student("LiShu","男","数学专业") );
+        // BOSS都是满级
+        for(let i = 0; i<this.full_level; i++)
+            this.level_up();
     }
     /* 属性 */
     bool_boss = true;
-    // fight方法是所有智能操作的结合，BOSS里会写的很复杂
+    // fight方法是所有智能操作的结合，一般会写的很复杂
     fight(){
-        this.attack();
+        this.enemy_attack();
     }
 }
 // YYH
-class YYH extends Math_Fighter{
+class YYH extends Enemy{
     // 技能：朝7晚10，全属性+1
     // 技能：脚本大师，下次攻击双倍伤害
     // 技能：作业plus，造成2点固定伤害
     // 技能：不贪不嗔，下次受伤减半
 }
 // LKH
-class LKH extends Math_Fighter{
+class LKH extends Enemy{
     // 技能：熬夜大师，攻击+2，防御-1，速度-1
     // 技能：高速学习，生命-2，防御+3，速度-1
     // 技能：灵活作业，下回合回避攻击，防御-1
     // 技能：放空心灵，生命+1
 }
 // HSJ
-class HSJ extends Math_Fighter{
+class HSJ extends Enemy{
     // 技能：消息灵通，速度+2
     // 技能：资源广泛，造成等于（自身速度值-对手速度）的伤害，速度-1，攻击-1
     // 技能：长规远划，永久受伤减半，下两个回合不能行动（限定技）
     // 技能：功利主义，永久伤害翻倍，随机失去一个技能（限定技）
 }
 // NI
-class NI extends Math_Fighter{
+class NI extends Enemy{
     // 技能：自信心
     // 技能：长规远划plus，
 }

@@ -23,7 +23,11 @@ power = JSON.parse(localStorage.getItem("power"));
 // 坑爹的localStorage不能传递方法，只能手动再造一个对象
 // 学生类
 you = JSON.parse(localStorage.getItem("you"));
-you = new Student(you.name,you.sex,you.major,you.num,you.level,you.life,you.att,you.def,you.hp,you.speed,you.day,you.dad,you.honor,you.full_level)
+you = new Student(you.name,you.sex,you.major, you.number,
+    you.level,you.full_level,
+    you.life,you.full_life,
+    you.att,you.def,you.hp,you.speed,
+    you.day,you.dad,you.honor,you.full_level)
 // 室友类
 roommate = JSON.parse(localStorage.getItem("roommate"));
 roommate = new Roommate(roommate.name,roommate.words, roommate.inter, roommate.figure,roommate.figure_src,roommate.fresh);
@@ -226,46 +230,73 @@ $("#set").click(function(){
     for(let i = 0; i< 4; i++)
         $(".skill-carry")[i].textContent = you.skill_carry_name[i];
 });
-
+// 关闭技能栏
 $("#close").click(function(){ 
     vanish("#skill-set");
  })
 
 /* 训练 */
 $("#train").click(function(){
-    choice("你将面对本专业老师的习题考验。若能证明自己，学校将会为你升级。确定消耗1体力进行考验吗？").done(function(choice_res){ 
-        if(choice_res == true)
-            go_to("./选择老师.html",["you","roommate","power"]);
-        else
-            return;
-     })
+    if(you.life != 0)
+        choice("你将面对本专业老师的习题考验。若能证明自己，学校将会为你升级。确定消耗1体力进行考验吗？").done(function(choice_res){ 
+            if(choice_res == true)
+            {
+                you.life -= 1;
+                go_to("../选择人物/选择老师.html",["you","roommate","power"]);
+            }
+            else
+                return;
+        })
+     else
+        inform("你的体力不足，今天先休息吧")
 });
 
 /* 切磋 */
 
 $("#compete").click(function(){
+    if(you.life != 0)
     choice("进行切磋会消耗1体力，确定要进行切磋吗？").done(function(choice_res){
         if(choice_res == true)
-            choice("在其它学校，你将面对更加强大的敌人，同时消耗双倍的体力。要进行校外切磋吗？").done(function(choice_res){ 
+            choice("在其它学校，你将面对更加强大的敌人，体力消耗改为2。要进行校外切磋吗？").done(function(choice_res){ 
                 if(choice_res == true)
-                    go_to("./校外地图.html",["you","roommate","power"]);
+                {
+                    if(you.life >= 2)
+                    {
+                        you.life -= 2;
+                        go_to("../对战敌人/校外地图.html",["you","roommate","power"]);
+                    }
+                        
+                    else
+                        inform("你的体力不足，今天先休息吧");
+                }
+                    
                 else
-                    inform("将为你在校内随机匹配敌人").done(function(){
-                        // 随机匹配敌人                 
-                    })
+                {
+                    if(you.life >= 1)
+                    {
+                        you.life -= 1;
+                        inform("将为你随机匹配当前等级的敌人").done(function(){
+                            // 随机匹配敌人                 
+                        })
+                    }
+                        
+                    else
+                        inform("你的体力不足，今天先休息吧");
+                }
             })
         else
             return;
-     })
+        })
 })
 
 /* 跳过这一天 */
 $("#skip").click(function(){
-    choice("你确定要跳过这一天吗？").done(function (choice_res) { 
+    choice("你确定要休息吗？这将直接跳到明天。").done(function (choice_res) { 
         if(choice_res == true)
             {
+                you.life = you.full_life;
                 you.day += 1;
-                inform("你跳过了这一天，离月考还有" + `${30-you.day}` + "天");
+                inform("你度过了这一天，离月考还有" + `${30-you.day}` + "天");
             }
         else
             return;
@@ -275,7 +306,10 @@ $("#skip").click(function(){
 $("#start").click(function(){
     choice("退出将清空所有数据，请确认你已经保存。确定要退出吗？").done(function(choice_res){
         if (choice_res == true)
-            window.location.assign("./start.html");
+        {
+            localStorage.clear();
+            window.location.assign("../../开始界面.html");
+        }
         else
             return;
     });

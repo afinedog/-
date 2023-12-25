@@ -1,3 +1,8 @@
+// 取值
+you = JSON.parse(localStorage.getItem("you"));
+power = JSON.parse(localStorage.getItem("power"));
+roommate = JSON.parse(localStorage.getItem("roommate"));
+// 选择敌人
 $("div.img-container").click(function(){
     // 敌人名字
     var enemy_name = $(this).find("img").attr("alt");
@@ -8,7 +13,7 @@ $("div.img-container").click(function(){
                 if(choice_res == true)
                     {
                         enemy = new YYH();
-                        go_to("切磋.html",["you","power","enemy"])
+                        go_to("../对战敌人/切磋.html",["you","power","enemy"])
                     }
                 else
                     return;
@@ -19,7 +24,7 @@ $("div.img-container").click(function(){
                 if(choice_res == true)
                     {
                         enemy = new LKH();
-                        go_to("切磋.html",["you","power","enemy"])
+                        go_to("../对战敌人/切磋.html",["you","power","enemy"])
                     }
                 else
                     return;
@@ -30,7 +35,7 @@ $("div.img-container").click(function(){
                 if(choice_res == true)
                     {
                         enemy = new HSJ();
-                        go_to("切磋.html",["you","power","enemy"])
+                        go_to("../对战敌人/切磋.html",["you","power","enemy"])
                     }
                 else
                     return;
@@ -41,7 +46,7 @@ $("div.img-container").click(function(){
                 if(choice_res == true)
                     {
                         enemy = new YYZ();
-                        go_to("切磋.html",["you","power","enemy"])
+                        go_to("../对战敌人/切磋.html",["you","power","enemy"])
                     }
                 else
                     return;
@@ -52,7 +57,7 @@ $("div.img-container").click(function(){
                 if(choice_res == true)
                     {
                         enemy = new LJL();
-                        go_to("切磋.html",["you","power","enemy"])
+                        go_to("../对战敌人/切磋.html",["you","power","enemy"])
                     }
                 else
                     return;
@@ -62,8 +67,8 @@ $("div.img-container").click(function(){
             choice(`你确定要挑战 ${enemy_name}吗？`).done(function(choice_res){
                 if(choice_res == true)
                     {
-                        enemy = new fool();
-                        go_to("切磋.html",["you","power","enemy"])
+                        enemy = new LiShu();
+                        go_to("../对战敌人/切磋.html",["you","power","enemy"])
                     }
                 else
                     return;

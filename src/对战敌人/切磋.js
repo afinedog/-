@@ -21,45 +21,51 @@ $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*win
 /* 从 localStorage 中取值 */
 you = JSON.parse(localStorage.getItem("you"));
 power = JSON.parse(localStorage.getItem("power"));
-// 坑爹的localStorage不能传递方法，只能手动再造一个对象
 roommate = JSON.parse(localStorage.getItem("roommate"));
 enemy = JSON.parse(localStorage.getItem("enemy"));
 
-// 根据专业不同，敌人继承不同对象
+// 为你实例化一个战斗对象
+you_fighter = new Fighter(you);
+// 根据专业不同，敌人继承不同对象（这一部分暂时没用）
 if(enemy.bool_boss == false)
 {
-    switch(enemy.major){ 
-        case "数学专业": enemy = new Math_Fighter(); break;
-        case "物理专业": enemy = new Math_Fighter(); break;
-        case "计算机专业": enemy = new Math_Fighter(); break;
-        case "电气电子": enemy = new Math_Fighter(); break;
-        case "土木专业": enemy = new Math_Fighter(); break;
-        case "医学专业": enemy = new Medicine_Fighter(); break;
-        case "文史哲法": enemy = new Math_Fighter(); break;
-        case "生化环材地": enemy = new Math_Fighter(); break;
-        case "金融专业": enemy = new Math_Fighter(); break;
+    switch(enemy.major){
+        case "数学专业": enemy = new Enemy(); break;
+        case "物理专业": enemy = new Enemy(); break;
+        case "计算机专业": enemy = new Enemy(); break;
+        case "电气电子": enemy = new Enemy(); break;
+        case "土木专业": enemy = new Enemy(); break;
+        case "医学专业": enemy = new Enemy(); break;
+        case "文史哲法": enemy = new Enemy(); break;
+        case "生化环材地": enemy = new Enemy(); break;
+        case "金融专业": enemy = new Enemy(); break;
     }
 }
-else
+else if(enemy.bool_boss == true)
 {
-    // 通过BOSS名字继承BOSS对象（这个操作在大项目里很危险，但在小项目里，真的很爽啊！）
+    // 通过BOSS名字继承BOSS对象（这个操作在大项目里很危险，但在小项目里，确实还行）
     enemy = eval(`new ${enemy.name}()`);
 }
 
 /* 创建对战对象 */
 // 回合数
-var round_num = 1;
-// 初始化敌人（先来打个傻子）
-enemy = new fool("李鼠");
+round_num = 1;
 
 /* 查看自己和敌人的信息 */
 $("#you_information")
 $("#enemy_information").click(function(){ 
-    Inform(`敌人：${enemy.name}：<br> 专业：${enemy.major}<br> 技能1：${enemy.skill_name[0]} <br> 技能2：${enemy.skill_name[1]} <br> 技能3：${enemy.skill_name[2]} <br> 技能4：${enemy.skill_name[3]} <br>`)
+    Inform(`敌人：${enemy.name}：<br> 专业：${enemy.major}<br> 技能1：${enemy.skill_carry_name[0]} <br> 技能1描述：${enemy.skill_carry_state()[0]}<br> 技能2：${enemy.skill_carry_name[1]} <br> 技能2描述：${enemy.skill_carry_state()[1]} <br> 技能3：${enemy.skill_carry_name[2]} <br> 技能3描述：${enemy.skill_carry_state()[2]} <br> 技能4：${enemy.skill_carry_name[3]} <br> 技能4描述：${enemy.skill_carry_state()[3]}`)
  })
 
 /* 技能栏初始化 */
-$("#skill1").html
+for(i in you_fighter.skill_carry_name)
+    eval(`you.i`)
+
+/* 认输逃跑 */
+$("#give_up").click(function(){ 
+    you_fighter.hp = 0;
+    report(`red`,you.name + "认输了");
+ })
 
 /* 技能栏切换 */
 // 切换到技能
@@ -74,7 +80,8 @@ $("#back").click(function(){
 })
 
 
-inform(`战斗开始，你的对手是 ${enemy.major} 的 ${enemy.name}`);
+report(`战斗开始，你的对手是 ${enemy.major} 的 ${enemy.name}`);
+
 
 /* 回合制战斗操作（最难的异步部分来了） */
 function compete()
@@ -82,15 +89,16 @@ function compete()
     report(`现在是第 ${round_num} 回合`);
     // var声明的是函数作用域，let声明的是块级作用域
     let deferred = $.Deferred();
+    console.log(deferred.state())
     /* 点击攻击 */
     $("#attack").click(function(){
         // 行为关键词
         var action = "攻击";
         // 暂时存储生命值
-        var temp_life = enemy.life;
+        var temp_hp = enemy.hp;
         // def对象被解决，可以执行敌人操作
         deferred.resolve(action);
-        var hurt = temp_life-enemy.life;
+        var hurt = temp_hp-enemy.hp;
         // 双方操作完毕，进行结算
         report(`red`,`${you.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${(hurt>0) ? hurt : 0} 点伤害`);
         return deferred.promise();
@@ -117,7 +125,7 @@ function compete()
         // 敌人操作完毕，进行结算
         switch (action) {
             case "攻击":
-                enemy.life -= (you_fighter.att - enemy.def > 0) ? you_fighter.att - enemy.def : 0;
+                enemy.hp -= (you_fighter.att - enemy.def > 0) ? (you_fighter.att - enemy.def) : 0;
                 break;
             case "防御":
                 // 防御的结算由敌人那边进行
@@ -136,3 +144,4 @@ function compete()
         compete();
     })
 }
+compete();

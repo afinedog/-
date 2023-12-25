@@ -30,7 +30,7 @@ $(".img-container").click(function(){
                     [1,1,1,1,1,3,0,2,3,1]
                  )
             }
-           go_to("./训练.html",["you","power","roommate","teacher"]);
+           go_to("../训练/训练.html",["you","power","roommate","teacher"]);
         }
         else
             return;

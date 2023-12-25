@@ -1,7 +1,7 @@
 // 清除浏览器缓存的内容
-// $(document).ready(function(){
-//     localStorage.clear()
-// });
+$(document).ready(function(){
+    localStorage.clear()
+});
 
 /* 游戏规则 */
 // 规则说明页面出现函数
@@ -118,7 +118,7 @@ $("#submit").click(function () {
                         power = [you.level, you.att,you.def,you.life,you.power,you.day];
                         inform("你选择了作弊模式").done(function(){
                             // 跳转页面，输入要传递的值
-                            go_to("./选择舍友.html", ["power","you"]);
+                            go_to("./src/选择人物/选择舍友.html", ["power","you"]);
                         })
                     }
                     else
@@ -131,7 +131,7 @@ $("#submit").click(function () {
                         power = [you.level, you.att,you.def,you.life,you.power,you.day];
                         inform("你选择了普通模式").done(function(){ 
                             // 跳转页面，输入要传递的值
-                            go_to("./选择舍友.html", ["power","you"]);
+                            go_to("./src/选择人物/选择舍友.html", ["power","you"]);
                          })
                     }
                  })
@@ -161,7 +161,7 @@ function check_save(){
             roommate = data[1];
             power = data[2];
             inform("成功加载存档，即将跳转页面").done(function(){
-                go_to("./寝室.html", ["you","power","roommate"]);
+                go_to("./src/寝室/寝室.html", ["you","power","roommate"]);
             })
         }
     }
