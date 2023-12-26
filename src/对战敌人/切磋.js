@@ -40,8 +40,8 @@ if(enemy.bool_boss == false)
 }
 else if(enemy.bool_boss == true)
 {
-    // 通过BOSS名字继承BOSS对象（这个操作在大项目里很危险，但在小项目里，确实还行）
-    enemy = eval(`new ${enemy.name}()`);
+    // 通过BOSS调用名，实例化BOSS对象（这个操作在大项目里很危险，但在小项目里，确实还行）
+    enemy = eval(`new ${enemy.invoke}()`);
     // 降临动画
     // enemy.arrive();
 }
@@ -51,22 +51,37 @@ else if(enemy.bool_boss == true)
 round_num = 1;
 
 /* 查看自己和敌人的信息 */
-$("#you_information")
+$("#you_information").click(function(){
+    var you_fighter_skill_arr = [];
+    for(i = 0; i < you_fighter.skill_carry.length ; i++)
+        you_fighter_skill_arr.push(`技能${i+1}：${you_fighter.skill_carry[i].name} <br> 技能 ${i+1} 描述：${you_fighter.skill_carry[i].state}<br>`);
+    Inform(`敌人：${you_fighter.name}：<br> 专业：${you_fighter.major}<br> ${you_fighter_skill_arr}`)
+})
 $("#enemy_information").click(function(){ 
-    Inform(`敌人：${enemy.name}：<br> 专业：${enemy.major}<br> 技能1：${enemy.skill_carry[0].name} <br> 技能1描述：${enemy.skill_carry[0].state}<br> 技能2：${enemy.skill_carry[1].name} <br> 技能2描述：${enemy.skill_carry[1].state} <br> 技能3：${enemy.skill_carry[2].name} <br> 技能3描述：${enemy.skill_carry[2].state} <br> 技能4：${enemy.skill_carry[3].name} <br> 技能4描述：${enemy.skill_carry[3].state}`)
+    var enemy_skill_arr = [];
+    for(i = 0; i < enemy.skill_carry.length ; i++)
+        enemy_skill_arr.push(`技能${i+1}：${enemy.skill_carry[i].name} <br> 技能 ${i+1} 描述：${enemy.skill_carry[i].state}<br>`);
+    Inform(`敌人：${enemy.name}：<br> 专业：${enemy.major}<br> ${enemy_skill_arr}`)
  })
 
 /* 技能栏初始化 */
 for(let i=0; i<you_fighter.skill_carry.length; i++)
-    eval(`you_fighter.skill_carry[i].invoke`)
+{
+    // 将技能名填入按钮
+    $(`#skill${i+1}`).text(you_fighter.skill_carry[i].name);
+    // 将技能赋予按钮
+    $(`#skill${i+1}`).click(function(){ 
+        `you_fighter.skill_carry[i].invoke`;
+        // console.log("成功填入按钮")
+    })
+}
 
 /* 认输逃跑 */
 $("#give_up").click(function(){
     choice("确定要认输吗？").done(()=>{
         you_fighter.hp = 0;
-        report(`red`,you.name + "认输了");
+        report(`red`,you_fighter.name + "认输了");
     })
-    
  })
 
 /* 技能栏切换 */
@@ -82,7 +97,7 @@ $("#back").click(function(){
 })
 
 // 点击动作按钮后，开始结算操作
-$(".action").click(()=>{
+$(".action").click(function (){
     var action_name = $(this).text();
     compete(action_name);
 })
@@ -93,34 +108,50 @@ $(".action").click(()=>{
 // 开始战斗
 report("black",`战斗开始，你的对手是 ${enemy.major} 的 ${enemy.name}`);
 // 你先操作时的结算
-function you_first(){
-    eval()
+function you_first(action_name){
+    // 你执行操作
+    switch(action_name){
+        case " 攻击 " :{
+            you_fighter.attack(enemy); break;
+        } 
+        case " 防御 " : {
+            you_fighter.defend(); break;
+        }
+        default :
+        {
+            var action_invoke = you_fighter.get_skill(action_name).invoke;
+            eval(`you_fighter.${action_invoke}`); break;
+        }
+    }
     // 敌人执行操作
     // enemy.tremble();
     enemy.fight();
-    // 敌人操作完毕，进行结算
-    switch (action) {
-        // 若你点了攻击
-        case "攻击":
-            enemy.hp -= (you_fighter.att - enemy.def > 0) ? (you_fighter.att - enemy.def) : 0;
-            break;
-        // 若你点了防御
-        case "防御":
-            // 防御的结算由敌人那边进行
-            break;
-        default:
-            break;
-    }
-    // 若敌人进行了防御，将其
-    if(enemy.bool_def == true)
-        {
-            enemy.def = enemy.def/2;
-            enemy.bool_def = false;
-        }
+    // 你后出手时，防御信息会保留到下一回合。但先出手时不会
+    you_fighter.bool_def = false;
 }
-// 敌人先操作时的结算
-function enemy_first(){
 
+// 敌人先操作时的结算
+function enemy_first(action_name){
+    // 敌人执行操作
+    // enemy.tremble();
+    enemy.fight();
+    // 你执行操作
+    switch(action_name){
+        case "攻击" : 
+        {
+            you_fighter.attack(enemy);
+        }
+        case "防御" : 
+        {
+            you_fighter.defend();
+        }
+        default:        
+        {
+            var action_invoke = you_fighter.get_skill().invoke;
+            eval(`you_fighter.${action_invoke}`); break;
+        }
+    }
+    enemy.bool_def = false;
 }
 
 /* 回合制战斗操作（最难的异步部分来了）
@@ -133,37 +164,35 @@ function compete(action_name)
 {
     // var声明的是函数作用域，let声明的是块级作用域
     // 你的初始操作
-    let deferred_you_1 = $.Deferred();
-    // 敌人的初始操作
-    let deferred_enemy_1 = $.Deferred();
+    // let deferred_you_1 = $.Deferred();
+    // // 敌人的初始操作
+    // let deferred_enemy_1 = $.Deferred();
     // // 你的结算操作
     // let deferred_you_2 = $.Deferred();
     // // 敌人的结算操作
     // let deferred_enemy_2 = $.Deferred();
-    // console.log(deferred.state())
+    // // console.log(deferred.state())
 
-    deferred.done(function (action) {
         // 若你的速度大于敌方
-        if( you.speed > enemy.speed)
+        if( you_fighter.speed > enemy.speed)
         {
-            you_first();
+            you_first(action_name);
         }
         // 若你的速度小于敌方
-        else if( you.speed < enemy.speed)
+        else if( you_fighter.speed < enemy.speed)
         {
-            enemy_first();
+            enemy_first(action_name);
         }
         // 速度相等时
-        else if (you.speed == enemy.speed)
+        else if (you_fighter.speed == enemy.speed)
         {
             //
             if(enemy.bool_boss == true)
-                enemy_first()
+                enemy_first(action_name)
             else
-                you_first();
+                you_first(action_name);
         }
-    })
     round_num += 1;
     // 下一回合开始
-    report("black",`现在是第 ${round_num} 回合`);
+    report("black",`回合结束。现在是第 ${round_num} 回合`);
 }

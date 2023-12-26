@@ -49,8 +49,10 @@ if (roommate.fresh == true)
 }
 else
 {
-    // 舍友图片从左端滑入
-    roommate.slide_in();
+    inform("欢迎回到宿舍，看看你的舍友在干什么吧").done(function(){
+        // 舍友图片从左端滑入
+        roommate.slide_in();
+    })
 }
 // 点击会发生震颤动画，并播放语录
 $("#roommate").click(function(){

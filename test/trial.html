@@ -11,7 +11,15 @@
     <div class="p" id="A"> 松松1 </div>
     <div class="p" style="position: absolute;"> 松松2  </div>
     <script>
-
+        var deferred = $.Deferred();
+        function a(){
+          console.log("第一步");
+          deferred.resolve();
+          console.log("第三步");
+          return deferred.promise();
+        }
+        deferred.done(()=>{console.log("第二步");  })
+        a().then(()=>{ console.log("最后一步"); }, ()=>{console.log("不应该被执行")});
     </script>
 </body>
 </html>

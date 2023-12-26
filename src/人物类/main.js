@@ -1,11 +1,11 @@
-// 技能类（用技能对象数组表示技能得了）
+// 技能类（用技能对象数组表示技能）
 class Skill{
-    // 技能名、技能描述、调用名
-    constructor(name, state, invoke)
+    // 技能名、技能描述、调用名、技能属性、技能pp
+    constructor(name, state, invoke, major, pp = Infinity)
     {
-        this.name = name; this.state = state; this.invoke = invoke;
+        this.name = name; this.state = state; this.invoke = invoke; this.major = major; this.pp = pp;
     }
-    name; state; invoke;
+    name; state; invoke; major; pp; 
 }
 // 学生类
 class Student
@@ -51,8 +51,8 @@ class Student
     name; sex; major; level; number; life; att; day = 1; dad = []; honor = []; full_level;
     // 总技能对象数组（召唤干爹用）
     skill_total = [
-        new Skill("逃课","逃课：回避当前回合攻击（其实就是锁血）。但会使防御力永久下降2", "running"),
-        new Skill("召唤干爹","召唤干爹：随机选择一个干爹，用其随机技能替换本技能", "you_summon")
+        new Skill("逃课","逃课：回避当前回合攻击（其实就是锁血）。但会使防御力下降1", "running()","none"),
+        new Skill("召唤干爹","召唤干爹：随机选择一个干爹，用其随机技能替换本技能", "you_summon()","none")
     ];
     // 技能对象数组
     skill_gotten = [this.skill_total[0],this.skill_total[1]];
@@ -73,32 +73,112 @@ class Student
         if(this.level < this.full_level)
         {
             var gain;
-            // 标准增长：[1,1,3,2,3]    最高增长：[2,2,5,2,5]
+            // 标准增长：[1,1,3,2,1]    最高增长：[2,2,5,2,2]
             // 不仅仅要和专业有关，还要和技能有配合。
             switch(this.major){
-                // 数学学生需要有强大的体力、心态、可支配时间，但是实操是短板，故攻击和防御比较低
-                case "数学专业": gain = [1,1,5,2,3]; break;
-                // 物理专业同理
-                case "物理专业": gain = [1,1,5,2,3]; break;
-                // 计算机专业需要有强大的实操水平和可支配时间，但长期996，身体不太行。所以体力和速度都是短板
-                case "计算机专业": gain = [2,1,1,1,2]; break;
+                // 数学学生需要有强大的体力、心态、可支配时间，但是实操是短板，故攻击低，防御高
+                case "数学专业": 
+                    gain = [
+                        (this.level>5) ? 0 : 1,
+                        (this.level>5) ? 0 : 2,
+                        3,
+                        (this.level>5) ? 0 : 1,
+                        1
+                    ];
+                    break;
+                // 物理专业相反，防御低，攻击高
+                case "物理专业":
+                    gain = [
+                        (this.level>5) ? 0 : 2,
+                        (this.level>5) ? 0 : 1,
+                        3,
+                        (this.level>5) ? 0 : 1,
+                        1
+                    ];
+                    break;
+                // 计算机专业需要有强大的实操水平和可支配时间，但长期996，身体不太行。所以血量和速度都是短板
+                case "计算机专业": 
+                    gain = [
+                        (this.level>5) ? 0 : 2,
+                        (this.level>5) ? 0 : 1,
+                        3,
+                        (this.level>6) ? 0 : 1,
+                        2
+                    ];
+                    break;
                 // 电气电子这种比较平平的专业，取较为标准的数值。在这里体现的思想是，生命要足够多，攻击力要足够小，才能更有玩法。不然战斗结束的太快了
-                case "电气电子": gain = [1,1,3,2,3]; break;
+                case "电气电子": gain = [1,1,3,2,3];
+                    gain = [
+                        (this.level>5) ? 0 : 2,
+                        (this.level>5) ? 0 : 2,
+                        3,
+                        (this.level>5) ? 0 : 2,
+                        2
+                    ];
+                    break;
                 // 著名牛马，纯纯的数值怪，各项都是增长最快的
-                case "土木专业": gain = [2,2,5,2,5]; break;
+                case "土木专业": 
+                    gain = [
+                        (this.level>5) ? 0 : 2,
+                        (this.level>5) ? 0 : 2,
+                        5,
+                        (this.level>5) ? 0 : 2,
+                        3
+                    ];
+                    break;
                 // 攻击力和速度顶尖，但其它都不太行
-                case "文史哲法": gain = [1,1,3,2,2]; break;
+                case "文史哲法": gain = [1,1,3,2,2];
+                    gain = [
+                        (this.level>5) ? 0 : 2,
+                        (this.level>5) ? 0 : 1,
+                        2,
+                        (this.level>5) ? 0 : 2,
+                        1
+                    ];
+                    break;
                 // 医学牲肯定要在体力和生命上下功夫啦
-                case "医学专业": gain = [1,1,5,1,3]; break;
+                case "医学专业":
+                    gain = [
+                        (this.level>5) ? 0 : 1,
+                        (this.level>5) ? 0 : 1,
+                        5,
+                        (this.level>5) ? 0 : 1,
+                        3
+                    ];
+                    break;
                 // 也是著名牲口。但相比于医学牲可以操纵自己生命值的做法，生化环材的体力更有意思
-                case "生化环材地": gain = [1,1,5,1,5]; break;
+                case "生化环材地":
+                    gain = [
+                        (this.level>5) ? 0 : 1,
+                        (this.level>5) ? 0 : 1,
+                        4,
+                        (this.level>5) ? 0 : 2,
+                        3
+                    ];
+                    break;
                 // 精英人士把握了话语权，总是能更快地看到产业的风口。速度会快得多。
-                case "金融专业": gain = [1,1,2,2,3]; break;
+                case "金融专业":
+                    gain = [
+                        (this.level>5) ? 0 : 1,
+                        (this.level>5) ? 0 : 1,
+                        3,
+                        (this.level>5) ? 0 : 2,
+                        1
+                    ];
+                    break;
                 // 默认是数学专业
-                default : gain = [1,1,5,2,3]; break;
+                default : 
+                    gain = [
+                        (this.level>5) ? 0 : 1,
+                        (this.level>5) ? 0 : 2,
+                        3,
+                        (this.level>5) ? 0 : 1,
+                        1
+                    ];
+                    break;
             }
             this.level += 1; this.att += gain[0]; this.def += gain[1]; this.hp += gain[2]; this.speed += gain[3]; this.full_life += gain[4]; this.life = this.full_life;
-            inform(`你提升了1级，获得的增益有：<br> 攻击力 ${gain[0]} <br> 防御力 ${gain[2]} <br> 速度 ${gain[3]} <br> 体力 ${gain[4]}`);
+            inform(`你提升了1级，获得的增益有：<br> 攻击力 ${gain[0]} <br> 防御力 ${gain[1]} <br> 血量 ${gain[2]} <br> 速度 ${gain[3]} <br> 体力 ${gain[4]}`);
         }
         else
             inform("已提升至满级");
@@ -147,6 +227,8 @@ class Student
     //     index1 = this.get_skill_index(skill1);  index2 = this.get_skill_index(skill2);
     //     index1 = 
     // }
+
+    // 战斗技能
 }
 
 // 舍友类
@@ -248,8 +330,8 @@ class Teacher{
 }
 
 // 战斗说明函数
-function report(color = "black",text){
-    $("#dialog").css("font-color",color);
+function report(color,text){
+    console.log(color);
     // var i = 0;
     // function type(text) { 
     //     // 打字机效果
@@ -263,7 +345,30 @@ function report(color = "black",text){
     //     }
     //  }
     // var timer = setInterval(type(text),50);
-    $("#dialog").append(text + "<br>");
+    // 更新数据
+    you_fighter.ability = [you_fighter.level, you_fighter.att, you_fighter.def, you_fighter.speed, you_fighter.hp,  you_fighter.life];
+    enemy.ability = [enemy.level, enemy.att, enemy.def, enemy.speed, enemy.hp, enemy.life];
+    // 重新填入上面的技能栏
+    if($(".power").length != 0)
+        {
+            for(var i = 0; i < $(".power").length; i++)
+                $(".power")[i].textContent = $(".power")[i].textContent.slice(0,2) + you_fighter.ability[i];
+            // 反正只有最高等级也只有个位数，所以就直接取前三个字符喽
+            if(you.level == you.full_level)
+                $(".power")[0].textContent = $(".power")[0].textContent.slice(0.3) + "(满)";
+        }
+    if($(".power-enemy").length != 0)
+    {
+        for(var i = 0; i < $(".power-enemy").length; i++)
+            $(".power-enemy")[i].textContent = $(".power-enemy")[i].textContent.slice(0,2) + enemy.ability[i];
+        // 反正只有最高等级也只有个位数，所以就直接取前三个字符喽
+        if(you.level == you.full_level)
+            $(".power-enemy")[0].textContent = $(".power-enemy")[0].textContent.slice(0.3) + "(满)";
+    }
+    // 更新战况报告栏
+    $("#dialog").append(`<span style='color:${color}'>` + text + "</span><br>");
+    // 滑动到最低端
+    $("#dialog").scrollTop($("#dialog")[0].scrollHeight);
     // 检测战斗是否终止
     if(you_fighter.hp <= 0)
     {
@@ -274,16 +379,16 @@ function report(color = "black",text){
         else
         {
             inform("战斗结束，你输了。干爹栏+1").done(function(){
-                you.dad.push(`${enemy.name}`);
+                you.dad.push(enemy.name);
                 go_to("../寝室/寝室.html", ["you,power,roommate"]);
              })
         }
     }
-
     else if(enemy.hp <= 0)
     {
-        inform("战斗结束，你赢了！")
-        go_to("../寝室/寝室.html", ["you,power,roommate"]);
+        inform("战斗结束，你赢了！").done(function(){
+            go_to("../寝室/寝室.html", ["you,power,roommate"])
+        })
     }
 }
 
@@ -297,151 +402,150 @@ class Fighter extends Student{
             student.life,student.full_life,
             student.att, student.def, student.hp, student.speed);
         // 子类属性（战斗素质）
-        this.power = [this.level, this.att, this.def, this.hp, this.speed, this.life];
+        this.ability = [this.level, this.att, this.def, this.speed, this.hp,  this.life];
     }
+    /* 子类属性 */
+    // 战斗素质
+    ability;
+    // 是否进行防御
+    bool_def = false; bool_running = false;
 
     /* 方法（低级技能） */
         /* 攻击 */
-        attack(){
-                // 行为关键词
-                var action = "攻击";
-                // 暂时存储敌方生命值
-                var temp_hp = enemy.hp;
-                // deferred_1对象被解决
-                deferred_you_1.resolve(action);
-                var hurt = temp_hp-enemy.hp;
-                // 双方操作完毕，进行结算
-                report(`red`,`${you.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${(hurt>0) ? hurt : 0} 点伤害`);
-                return deferred_you_1.promise();
-        }
-        /* 防御 */
-        defend(){
-                // 行为关键词
-                var action = "防御"
-                // 暂时存储防御值
-                var temp_def = you_fighter.def;
-                // 防御变为2倍
-                you_fighter.def = you.def*2;
-                report(`aqua`, `${you_fighter.name} 进行了防御`);
-                // def对象被解决，可以执行回调（敌人的攻击攻击）
-                deferred.resolve(action);
-                // 双方结算完后，防御变回原来的值
-                you_fighter.def = temp_def;
-                return deferred_you_1.promise()
+    attack(enemy){
+        // 开始储存环节，暂时存储敌方生命值
+        var temp_hp = enemy.hp;
+        // 开始操作环节
+        var hurt;
+        if( enemy.bool_def == true)
+        {
+            hurt = this.att - enemy.def;
+            if(hurt >= 0)
+            {
+                enemy.hp -= hurt;
+                report("red",`${this.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${hurt} 点伤害`);
             }
+            else
+            {
+                // 反弹溢出的伤害
+                hurt = 0 - hurt;
+                this.hp -= hurt;
+                enemy.bool_def = false;
+                report("red",`${this.name} 攻击了 ${enemy.name}。${this.name} 受到 ${hurt} 点伤害`);
+            }
+        }
+        else if(enemy.bool_def == false)
+        {
+            hurt = this.att;
+            enemy.hp -= hurt;
+            report("red",`${this.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${hurt} 点伤害`)
+        }
+        else if(enemy.bool_running == true)
+            report("red",`${this.name} 攻击了 ${enemy.name}。但没有效果。`)
+    }
+    /* 防御 */
+    defend(){
+            this.bool_def = true;
+            report(`blue`, `${this.name} 进行了防御`);
+            // def对象被解决，可以执行回调（敌人的存储）
+        }
     // 逃课，免疫一次攻击，但防御力永久-2
     running()
     {
-        // 获取当前技能在携带技能中的序号
-        var index = this.get_skill_carry_index("逃课")
-        // 将技能名填入按钮
-        $(`#skill${index}`).text("逃课");
         // 若携带了逃课技能
-        if(index != -1)
+        if(this.def > 0)
         {
-            // 点击由你设置的逃课技能按钮
-            $(`#skill${index}`).click(function(){ 
-                // 其实就是锁血
-                var temp_hp = this.hp;
-                // 该回合结束
-                deferred.resolve();
-                // 回合结束，将血量改回来并降低2
-                this.hp = temp_hp;
-                this.def -= 2;
-                return deferred.promise();
-            });
+            this.bool_running = true;
+            this.def -= 1;
             // 战斗报告（绿色）
-            report("green",`${you_fighter.name} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-2`)
+            report("green",`${this.name} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-1`);
         }
-        else 
+        else if (this.def <= 0)
+            inform(`${this.name} 防御值过低，无法逃课`);
             return;
     }
     // 召唤干爹，获得等同于随机一个干爹的属性值一回合
     you_summon(){
         // 获取当前技能在携带技能中的序号
-        var index = this.get_skill_carry_index("召唤干爹");
-        if(index != -1)
+        var index = this.get_skill_carry_index("召唤干爹") + 1;
+        if(index != -1 && this.dad.length != 0)
         {
-            // 将技能名填入按钮
-            $(`#skill${index}`).text("召唤干爹");
-
-            // 点击由你设置的召唤干爹技能按钮
-            $(`#skill${index}`).click(function(){ 
-                // 随机选取一个干爹
+            // 随机选取一个有技能的干爹
+            do {
                 var dad_now = this.dad[Math.floor(Math.random()*this.dad.length)];
-                // 随机选取干爹一个技能替换你当前的技能
-                var skill_now = this.skill_carry[index] = dad_now.skill_carry[ Math.floor( Math.random()*this.dad.length ) ];
-                // 替换技能按钮的名字
-                $(`#skill${index}`).text(skill_now.name);
-                // 替换技能按钮的事件
-                $(`#skill${index}`).click(function(){
-                    // 问题在于，BOSS的技能怎么写，才能让我在Fighter类没有声明该技能的基础上让它执行？
-                    // 答案是：在自己的Fighter类上全写出来得了。反正对战时只需要操作 skill_carry
-                    eval(skill_now.invoke);
-                })
-                // 结束回合
-                deferred.resolve();
-                return deferred.promise();
-            });
+            }
+            while( dad_now.skill_carry == []);
+            // 随机选取干爹一个技能替换你当前的技能
+            var skill_now = this.skill_carry[index] = dad_now.skill_carry[ Math.floor( Math.random()*this.dad.length ) ];
+            // 替换技能按钮的名字
+            $(`#skill${index}`).text(skill_now.name);
+            // 替换技能按钮的事件
+            $(`#skill${index}`).click(function(){
+                // 问题在于，BOSS的技能怎么写，才能让我在Fighter类没有声明该技能的基础上让它执行？
+                // 答案是：在自己的Fighter类上全写出来得了。反正对战时只需要操作 skill_carry
+                eval(skill_now.invoke);
+            })
             // 战斗报告（绿色）
             report("green",`${this.name} 使用了召唤干爹，获得了干爹 ${dad_now} 的技能 ${skill_now.name}`)
         }
-        else 
-            return;
+        else
+            inform("你没有干爹");
     }
-}
+};
+
 
 /* 敌人类 */
-class Enemy extends Student{
+class Enemy extends Fighter{
     constructor(student)
     {
         // 装填为学生类
-        super(student.name, student.sex, student.major, student.number,
-            student.level,student.full_level,
-            student.life,student.full_life,
-            student.att, student.def, student.hp, student.speed);
-        // 子类属性（战斗素质）
-        this.power = [this.level, this.att, this.def, this.hp, this.speed, this.life];
+        super(student)
     }
     /* 新增的属性 */
-    // 是否进行防御（唉，这一步明明可以优化的）
-    bool_def = false;
-    // 是否是boss
-    bool_boss = false;
+    // 调用名
+    invoke;
 
     /* 方法（敌人的操作）*/
-    // 敌人的普通攻击
-    enemy_attack(){
-        // 暂时存储生命
-        var you_temp_hp = you_fighter.hp;
-        deferred_enemy_1.resolve();
-        // 结算伤害
-        you_fighter.hp -= enemy.att - you_fighter.def;
-        // 战斗报告（红色）
-        report(`red`,`${enemy.name} 攻击了 ${you_fighter.name}。${you_fighter.name} 受到 ${(you_temp_hp-you_fighter.hp > 0) ? you_temp_hp-you_fighter.hp : 0} 点伤害`);
-    }
-    // 敌人的普通防御
-    enemy_defend(){
-        // 将是否防御设为“是”
-        enemy.bool_def = true;
-        // 防御变为2倍
-        enemy.def = enemy.def*2;
-        // 战斗报告（蓝色）
-        report(`aqua`,`${enemy.name} 进行了防御`)
-    }
-    // 敌人的逃课
-    enemy_running(){
-        // 其实就是锁血
-        var temp_hp = this.hp;
-        // 该回合结束
-        deferred.resolve();
-        // 回合结束，将血量改回来并降低2
-        this.hp = temp_hp;
-        this.def -= 2;
-        // 战斗报告（绿色）
-        report("green",`${this.name} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-2`)
-        return deferred.promise();
-    }
+    // // 敌人的普通攻击
+    // enemy_attack(){
+    //      // 开始储存环节，暂时存储敌方生命值
+    //      var temp_hp = enemy.hp;
+    //      // 开始操作环节
+    //      var hurt;
+    //      if( enemy.bool_def == true)
+    //     {
+    //         hurt = this.att - you_fighter.def;
+    //         if(hurt >= 0)
+    //         {
+    //             enemy.hp -= hurt;
+    //             report(`red`,`${this.name} 攻击了 ${you_fighter.name}。${you_fighter.name} 受到 ${hurt}$ 点伤害`);
+    //         }
+    //         else
+    //         {
+    //             // 反弹溢出的伤害
+    //             hurt = 0 - hurt;
+    //             you.hp -= hurt;
+    //             enemy.bool_def = false;
+    //             report(`red`,`${this.name} 攻击了 ${you_fighter.name}。${you_fighter.name} 受到 ${hurt} 点伤害`);
+    //         }
+    //     }
+    //     else if(you_fighter.bool_def == false)
+    //         hurt = temp_hp - enemy.hp;
+    //     else if(you_fighter.bool_running == true)
+    //         report("red",`${this.name} 攻击了 ${you_fighter.name}。但没有效果。`)
+    // }
+    // // 敌人的普通防御
+    // enemy_defend(){
+    //     this.bool_def = true;
+    //     // 战斗报告（蓝色）
+    //     report(`aqua`,`${enemy.name} 进行了防御`)
+    // }
+    // // 敌人的逃课
+    // enemy_running(){
+    //     this.bool_running = true;
+    //     // 战斗报告（绿色）
+    //     report("green",`${this.name} 使用了逃课，将会回避下回合对手的攻击。但之后防御力永久-1`)
+    // }
 }
 
 /* 不同专业的战斗类*/

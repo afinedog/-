@@ -71,16 +71,10 @@
     flex-direction: row;
     background-color: white;
 }
-.flex-up>div{
+.flex-up>div, #you > div{
     border: solid red 2px;
 }
-.flex-up2{
-    display: flex;
-    position: relative; left: 1vh;
-    flex-direction: row;
-    background-color: white;
-}
-.flex-up2>div{
+#enemy > div{
     border: solid blue 2px;
 }
 
