@@ -16,20 +16,17 @@ $("#background").css({"height":`${2/3*window.innerHeight}`,"width":`${3/5*window
 $(".flex-down").css({"height":`${1/4*window.innerHeight}`,"width":`${5/6*window.innerWidth}`})
 $(".flex-down div").css({"height":`${1/4*window.innerHeight}`,"width":`${1/4*window.innerWidth}`})
 
-// 能力值数组(6维)，分别是：等级、攻击、防御、生命、体力、天数
-// var power = [you.level, you.att,you.def,you.life,you.power,you.day];
+
 /* 从 localStorage 中取值 */
-power = JSON.parse(localStorage.getItem("power"));
+get_var(["you","roommate","power"]);
 // 坑爹的localStorage不能传递方法，只能手动再造一个对象
 // 学生类
-you = JSON.parse(localStorage.getItem("you"));
 you = new Student(you.name,you.sex,you.major, you.number,
     you.level,you.full_level,
     you.life,you.full_life,
     you.att,you.def,you.hp,you.speed,
     you.day,you.dad,you.honor,you.full_level)
 // 室友类
-roommate = JSON.parse(localStorage.getItem("roommate"));
 roommate = new Roommate(roommate.name,roommate.words, roommate.inter, roommate.figure,roommate.figure_src,roommate.fresh);
 
 /* 第一次进入时的交互 */
@@ -243,12 +240,18 @@ $("#set").click(function(){
                 inform("禁止携带两个一样的技能");
                 return;
             }
+            // 初始技能为空时
             else
+            {   
                 index_carry = you.get_skill_carry_index(carry_name);
+                if(index_carry == -1)
+                    index_carry = $(this).index(".skill-carry");
+            }
             // console.log("index_carry：" + index_carry);
 
             // 将（该索引下的已携带技能）重新赋值为（该索引下的未携带技能）即可
             you.skill_carry[index_carry] = you.skill_total[index_select];
+            // console.log(you.skill_carry)
         }
     })
     // console.log(`现在的已携带技能 ${index_carry} 是`); console.log(you.skill_carry[index_carry]);

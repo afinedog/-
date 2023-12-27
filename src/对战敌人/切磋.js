@@ -16,10 +16,11 @@ $("#background").css({"height":`${3/4*window.innerHeight}`,"width":`${window.inn
 $("#background").css({"height":`${2/3*window.innerHeight}`,"width":`${3/5*window.innerWidth}`})
 
 /* 从 localStorage 中取值 */
-you = JSON.parse(localStorage.getItem("you"));
-power = JSON.parse(localStorage.getItem("power"));
-roommate = JSON.parse(localStorage.getItem("roommate"));
-enemy = JSON.parse(localStorage.getItem("enemy"));
+// you = JSON.parse(localStorage.getItem("you"));
+// power = JSON.parse(localStorage.getItem("power"));
+// roommate = JSON.parse(localStorage.getItem("roommate"));
+// enemy = JSON.parse(localStorage.getItem("enemy"));
+get_var(["you","power","roommate","enemy"]);
 
 // 为你实例化一个战斗对象
 you_fighter = new Fighter(you);
@@ -109,32 +110,40 @@ $(".action").click(function (){
 report("black",`战斗开始，你的对手是 ${enemy.major} 的 ${enemy.name}`);
 // 你先操作时的结算
 function you_first(action_name){
-    // 你执行操作
-    switch(action_name){
-        case " 攻击 " :{
-            you_fighter.attack(enemy); break;
-        } 
-        case " 防御 " : {
-            you_fighter.defend(); break;
-        }
-        default :
-        {
-            var action_invoke = you_fighter.get_skill(action_name).invoke;
-            eval(`you_fighter.${action_invoke}`); break;
-        }
+    if(you_fighter.no_action != 0)
+    {
+        you_fighter.no_action -= 1;
     }
+    else
+        // 你执行操作
+        switch(action_name){
+            case " 攻击 " :{
+                you_fighter.attack(enemy); break;
+            } 
+            case " 防御 " : {
+                you_fighter.defend(); break;
+            }
+            default :
+            {
+                var action_invoke = you_fighter.get_skill(action_name).invoke;
+                eval(`you_fighter.${action_invoke}`); break;
+            }
+        }
     // 敌人执行操作
     // enemy.tremble();
     enemy.fight();
-    // 你后出手时，防御信息会保留到下一回合。但先出手时不会
-    you_fighter.bool_def = false;
+    // 后出手时，当前会保留到下一回合。但先出手时不会
+
 }
 
 // 敌人先操作时的结算
 function enemy_first(action_name){
+    if(enemy.no_action != 0)
+        enemy.no_action -= 1;
+    else
     // 敌人执行操作
     // enemy.tremble();
-    enemy.fight();
+        enemy.fight();
     // 你执行操作
     switch(action_name){
         case "攻击" : 
@@ -151,8 +160,23 @@ function enemy_first(action_name){
             eval(`you_fighter.${action_invoke}`); break;
         }
     }
-    enemy.bool_def = false;
+    
 }
+
+// 状态清空（后出手时，当前会保留到下一回合。但先出手时不会）
+function clear_condition(){
+    // 防御状态
+    you_fighter.bool_def = false;   enemy.bool_def = false;
+    // 逃课状态
+    you_fighter.bool_running = false; enemy.bool_running = false;
+}
+
+// 记录状态
+var you_log = [you_fighter.ability];
+var enemy_log = [enemy.ability];
+// 记录受伤
+var you_hurt = [0];
+var enemy_hurt = [0];
 
 /* 回合制战斗操作（最难的异步部分来了）
  * 思路如下：
@@ -195,4 +219,10 @@ function compete(action_name)
     round_num += 1;
     // 下一回合开始
     report("black",`回合结束。现在是第 ${round_num} 回合`);
+    // 存储当前回合属性数据
+    you_log.push(you_fighter.ability);
+    enemy_log.push(enemy.ability);
+    // 存储双方受伤数据
+    you_hurt.push( you_log[you_log.length -2][4] - you_log[you_log.length -1][4] );
+    enemy_hurt.push( enemy_log[enemy_log.length -2][4] - enemy_log[enemy_log.length -1][4] );
 }

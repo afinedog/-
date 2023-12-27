@@ -51,8 +51,37 @@ class Student
     name; sex; major; level; number; life; att; day = 1; dad = []; honor = []; full_level;
     // 总技能对象数组（召唤干爹用）
     skill_total = [
+        // 技能：逃课
         new Skill("逃课","逃课：回避当前回合攻击（其实就是锁血）。但会使防御力下降1", "running()","none"),
-        new Skill("召唤干爹","召唤干爹：随机选择一个干爹，用其随机技能替换本技能", "you_summon()","none")
+        // 技能：召唤干爹
+        new Skill("召唤干爹","召唤干爹：随机选择一个干爹，用其随机技能替换本技能", "you_summon()","none"),
+        /* YYH的技能 */
+        // 技能：朝7晚10，全属性+1
+        new Skill("朝7晚10","朝7晚10：全属性+1","Seven_to_ten()","数学专业"),
+        // 技能：脚本大师，下次攻击双倍伤害
+        new Skill("脚本大师","脚本大师：下次攻击双倍伤害","Script_master()","计算机专业"),
+        // 技能：交作业，造成2点固定伤害
+        new Skill("交作业","交作业：造成2点固定伤害","Summit()","none"),
+        // 技能：不贪不嗔，将属性恢复到上回合的状态
+        new Skill("不贪不嗔","不贪不嗔：将属性恢复到上回合的状态","Neither_greedy()","数学专业"),
+        /* LKH的技能 */
+        // 技能：囫囵吞枣，攻击+3，防御-2，速度-1
+        new Skill("囫囵吞枣","囫囵吞枣：攻击+3，防御-2，速度-1","Bolt()","数学专业"),
+        // 技能：熬夜刷题，生命-2，防御+3，速度-1
+        new Skill("熬夜刷题","熬夜刷题，生命-2，防御+3，速度-1","Study_night()","数学专业"),
+        // 技能：灵活作业，下回合敌方技能失效，攻击-1，防御-1
+        new Skill("灵活作业","灵活作业：下回合敌方技能失效。攻击-1，防御-1","Flexible_summit()","数学专业"),
+        // 技能：数学大师，下回合数学专业技能效果翻倍
+        new Skill("数学大师","数学大师：下回合数学专业技能效果翻倍","Men_of_Math()","数学专业"),
+        /* HSJ的技能 */
+        // 技能：消息灵通，速度+2
+        new Skill("消息灵通","消息灵通：速度+2","Get_news()","数学专业"),
+        // 技能：资源广泛，造成等于（自身速度值-对手速度）的伤害，速度-1，攻击-1
+        new Skill("资源广泛","资源广泛，造成等于（自身速度值-对手速度）的伤害，速度-1，攻击-1","Resourceful()","数学专业"),
+        // 技能：长规远划，永久受伤减半，下两个回合不能行动（PP = 1）
+        new Skill("长规远划","长规远划：永久受伤减半，下两个回合不能行动（PP=1）","Long_plan()","数学专业",1),
+        // 技能：功利主义，永久伤害翻倍，随机失去一个技能（PP = 1）
+        new Skill("功利主义","功利主义：永久伤害翻倍，随机失去一个技能（PP=1）","Benthamism()","数学专业",1)
     ];
     // 技能对象数组
     skill_gotten = [this.skill_total[0],this.skill_total[1]];
@@ -186,6 +215,9 @@ class Student
     // 已知技能名，获取其在（总技能数组）中的索引
     get_skill_index(known_name){
         return this.skill_total.findIndex(skill => skill.name == known_name);
+    }
+    get_skill_gotten_index(known_name){
+        return this.skill_gotten.findIndex(skill => skill.name == known_name);
     }
     // 已知技能名，获取其在（已携带技能数组）中的索引
     get_skill_carry_index(known_name){
@@ -331,7 +363,6 @@ class Teacher{
 
 // 战斗说明函数
 function report(color,text){
-    console.log(color);
     // var i = 0;
     // function type(text) { 
     //     // 打字机效果
@@ -387,7 +418,7 @@ function report(color,text){
     else if(enemy.hp <= 0)
     {
         inform("战斗结束，你赢了！").done(function(){
-            go_to("../寝室/寝室.html", ["you,power,roommate"])
+            Get_skill(enemy).done(()=>{go_to("../寝室/寝室.html", ["you,power,roommate"])})
         })
     }
 }
@@ -403,20 +434,22 @@ class Fighter extends Student{
             student.att, student.def, student.hp, student.speed);
         // 子类属性（战斗素质）
         this.ability = [this.level, this.att, this.def, this.speed, this.hp,  this.life];
+        // 是否进行防御、逃课、双倍伤害、锁定属性、锁定血量
+        this.bool_def = false; this.bool_running = false; this.bool_double_att = false; 
+        // 双倍技能效果
+        this.double_Math = false;
+        // 不能行动
+        this.no_action = 0;
+        this.skill_carry = student.skill_carry;
+        this.skill_gotten = student.skill_gotten;
     }
     /* 子类属性 */
-    // 战斗素质
-    ability;
-    // 是否进行防御
-    bool_def = false; bool_running = false;
-
+    
+    
     /* 方法（低级技能） */
         /* 攻击 */
-    attack(enemy){
-        // 开始储存环节，暂时存储敌方生命值
-        var temp_hp = enemy.hp;
+    attack(enemy,hurt = this.att){
         // 开始操作环节
-        var hurt;
         if( enemy.bool_def == true)
         {
             hurt = this.att - enemy.def;
@@ -434,14 +467,23 @@ class Fighter extends Student{
                 report("red",`${this.name} 攻击了 ${enemy.name}。${this.name} 受到 ${hurt} 点伤害`);
             }
         }
+        // 敌人非防御状态
         else if(enemy.bool_def == false)
         {
             hurt = this.att;
             enemy.hp -= hurt;
             report("red",`${this.name} 攻击了 ${enemy.name}。${enemy.name} 受到 ${hurt} 点伤害`)
         }
+        // 敌人是逃课状态
         else if(enemy.bool_running == true)
             report("red",`${this.name} 攻击了 ${enemy.name}。但没有效果。`)
+        // 你是双倍伤害状态
+        else if(this.double_att == true)
+        {
+            hurt = this.att*2;
+            report("red",`${this.name} 攻击了 ${enemy.name}。但没有效果。`)
+        }
+        this.bool_double_att = false;
     }
     /* 防御 */
     defend(){
@@ -503,7 +545,7 @@ class Enemy extends Fighter{
     }
     /* 新增的属性 */
     // 调用名
-    invoke;
+    invoke; bool_boss;
 
     /* 方法（敌人的操作）*/
     // // 敌人的普通攻击
@@ -677,6 +719,56 @@ function Inform(text){
     return deferred.promise();
 }
 
+// 选择敌方技能并获得
+function Get_skill(enemy){
+    var deferred = $.Deferred();
+    // 九级z-index，比Inform低一级
+    show("#Select",9);
+    var select_name;
+    var length = you.skill_gotten.length;
+    for(i = 0; i<enemy.skill_carry.length; i++)
+    {
+        // 填入技能
+        $(`#skill-select${i+1}`).text(enemy.skill_carry[i].name);
+        $(`#skill-select${i+1}`).click(function(){
+            focus_this = $(this);
+            select_name = $(this).text();
+            console.log(select_name);
+            // 技能变色
+            $(".skill-select").each(function(index){
+                // 若序号为i的技能已被选中，且i不等于被正在被点击的技能的序号，则撤销序号为i的技能的被选中状态（边框变回透明）
+                if( focus_this.css("border-color") == "rgb(0, 128, 0)" || index != $(this).index())
+                    $(this).css("border-color","lightgrey");
+            })
+            // 当前被点击的元素边框变绿
+            $(this).css("border-color","green");
+        })
+    }
+    // 查看技能
+    $(`#look`).click(function(){
+        var this_skill = you_fighter.get_skill(select_name);
+        // console.log(this_skill)
+        Inform(`技能名称：${this_skill.name}; <br> 技能描述：${this_skill.state}; <br> 技能属性：${this_skill.major}; <br> 技能PP：${this_skill.pp}`);
+    })
+    // 设置技能
+    $(`#set`).click(function(){
+        var index_got = you_fighter.get_skill_gotten_index(select_name);
+        if( index_got != -1 )
+            inform("不能选择已有的技能");
+        else
+        {
+            inform(`选择成功，你获得了技能 ${select_name}`).done(function(){
+                var this_skill = you_fighter.get_skill(select_name);
+                // console.log(this_skill);
+                you.skill_gotten[length] = this_skill;
+                console.log(you.skill_gotten);
+                vanish("#Select");
+                deferred.resolve();
+            });
+        }
+    })
+    return deferred.promise();
+}
 /* 输入网址，跳转页面 */
 // href是跳转的网址，para是传递的参数数组
 function go_to(href, para)
@@ -688,9 +780,29 @@ function go_to(href, para)
         var variableValue = eval(variableName); // 获取变量的值
         localStorage.setItem(variableName, JSON.stringify(variableValue));
     }
-    // you = JSON.parse(localStorage.getItem("you"));
-    //跳转到寝室页面
+    // 存个技能
+    if(you.skill_carry.length != undefined)
+    {
+        localStorage.setItem("skill_gotten_now", JSON.stringify(you.skill_gotten));
+        localStorage.setItem("skill_carry_now", JSON.stringify(you.skill_carry));
+    }
+    //跳转到其它页面
     window.location.href = href;
+}
+// 本来没想写这个的……都是因为对象数组成员也无法传递。LocalStorage真是啥都不能存
+function get_var(para)
+{
+    // para变量名的字符串数组
+    for (var i = 0; i < para.length; i++) {
+        var variableName = para[i];
+        window[variableName] = JSON.parse(localStorage.getItem(variableName));
+    }
+    // 取个技能
+    if(you.skill_carry.length != undefined)
+    {
+        you.skill_gotten = JSON.parse(localStorage.getItem("skill_gotten_now"));
+        you.skill_carry = JSON.parse(localStorage.getItem("skill_carry_now"));
+    }
 }
 
 /* 新建版本的通知窗口 */

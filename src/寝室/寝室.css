@@ -107,13 +107,13 @@ button:active{
     background-color: grey;
 }
 /* 重置框里面的内容 */
-#inform>div,#choice>div,#Inform>div,#skill-set>div{
+#inform>div,#choice>div,#Inform>div,#skill-set>div, #Select>div{
     position:relative; top:5%;
     text-align: center;
     font-size:20px;
 }
-/* 信息框 */
-#Inform,#skill-set{
+/* 信息框、技能选取框 */
+#Inform,#skill-set,#Select{
     /* 位置设置 */
     position: absolute;
     left: 20%; top: 10%;
@@ -140,7 +140,7 @@ button:active{
     right: 5%;
 }
 /* 技能按键 */
-.skill,.skill-carry{
+.skill,.skill-carry,.skill-select{
     display: inline-block;
     position: relative; left: 11vh;
     height: 10%; width: 15%;
